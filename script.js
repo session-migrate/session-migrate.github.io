@@ -14,7 +14,8 @@ for (const button of document.querySelectorAll("[data-copy]")) {
 
 const trajectory = document.querySelector("[data-trajectory]");
 if (trajectory) {
-  const duration = 29_000;
+  const durations = { pi: 80_280, codex: 91_320 };
+  let duration = durations.pi;
   const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const phaseLabel = trajectory.querySelector("[data-trajectory-phase]");
   const stateLabel = trajectory.querySelector("[data-trajectory-state]");
@@ -27,6 +28,7 @@ if (trajectory) {
   const replayButton = trajectory.querySelector('[data-trajectory-action="replay"]');
   const afterImage = document.querySelector("[data-demo-after-image]");
   const afterCaption = document.querySelector("[data-demo-after-caption]");
+  const durationLabel = document.querySelector("[data-demo-duration]");
   let target = "pi";
   let elapsed = motion.matches ? duration - 1 : 0;
   let paused = motion.matches;
@@ -35,36 +37,36 @@ if (trajectory) {
   let previous = performance.now();
 
   const details = {
-    pi: { label: "Pi", native: "native v3 JSONL", reply: "Continued in Pi.", resume: "pi --session 20000000-…", image: "/assets/demo-after-pi.png?v=3" },
-    codex: { label: "Codex", native: "native rollout JSONL", reply: "Continued in Codex.", resume: "codex resume 30000000-…", image: "/assets/demo-after-codex.png?v=3" },
+    pi: { label: "Pi", native: "native v3 JSONL", reply: "3 tests passed · patch applied in Pi", resume: "pi --session 20000000-…", image: "/assets/demo-after-pi.png?v=4", duration: durations.pi },
+    codex: { label: "Codex", native: "native rollout JSONL", reply: "3 tests passed · patch applied in Codex", resume: "codex resume 30000000-…", image: "/assets/demo-after-codex.png?v=4", duration: durations.codex },
   };
 
   const linesFor = (value) => {
     const item = details[value];
+    const finishAt = value === "pi" ? 74000 : 85000;
     return [
-      [250, "meta", "CLAUDE", "native session · conversation loaded", false],
-      [900, "command", "YOU", 'Reply with exactly "Migration begins in Claude."', true],
-      [4500, "history", "CLAUDE", "Migration begins in Claude.", false],
-      [6200, "command", "❯", `smigrate transfer 10000000-… --from claude --to ${value}`, true],
-      [9600, "success", "✓", `native ${item.label} session created · source unchanged`, false],
-      [11300, "meta", item.label.toUpperCase(), "migrated conversation opened in the native TUI", false],
-      [12300, "history", "YOU", "Continue after the synthetic compaction.", false],
-      [13500, "history", "CLAUDE", "The synthetic post-compaction fixture is complete.", false],
-      [14700, "history", "YOU", 'Reply with exactly "This native session is ready."', false],
-      [15900, "history", "CLAUDE", "This native session is ready.", false],
-      [17100, "history", "YOU", 'Reply with exactly "Migration begins in Claude."', false],
-      [18300, "history", "CLAUDE", "Migration begins in Claude.", false],
-      [20000, "command", "YOU", `Reply with exactly "Continued in ${item.label}."`, true],
-      [23500, "success", item.label.toUpperCase(), item.reply, false],
-      [25500, "success", "RESUME", item.resume, false],
+      [250, "meta", "CLAUDE", "native session · timeline project loaded", false],
+      [900, "command", "YOU", "Keep gap_ms=0 backward compatible. Propose the smallest patch and one regression test that separates touching events from a real 1 ms gap.", true],
+      [9000, "meta", "CLAUDE", "reviews timeline.py and the focused tests…", false],
+      [17000, "history", "CLAUDE", "Boundary diagnosis: gap < gap_ms excludes touching events when gap_ms is zero.", false],
+      [34000, "history", "CLAUDE", "Smallest patch: change < to <=; test gap 0 against a real 1 ms gap.", false],
+      [43000, "command", "❯", `smigrate transfer 10000000-… --from claude --to ${value}`, true],
+      [47500, "success", "✓", `native ${item.label} session created · source unchanged`, false],
+      [50000, "meta", item.label.toUpperCase(), "migrated history opened in the native TUI", false],
+      [51500, "history", "YOU", "Keep gap_ms=0 backward compatible…", false],
+      [53000, "history", "CLAUDE", "Change < to <= and add a touching-vs-1ms regression test.", false],
+      [55000, "command", "YOU", `Continue in ${item.label}: implement the patch, add the regression test, and run the focused suite.`, true],
+      [64000, "meta", item.label.toUpperCase(), "reads timeline.py · applies one-line fix · adds regression", false],
+      [finishAt, "success", item.label.toUpperCase(), item.reply, false],
+      [item.duration - 2500, "success", "RESUME", item.resume, false],
     ];
   };
 
   const phaseFor = (value) => {
-    if (value < 6200) return "claude";
-    if (value < 11300) return "migrate";
-    if (value < 20000) return "review";
-    if (value < 25500) return "continue";
+    if (value < 43000) return "claude";
+    if (value < 50000) return "migrate";
+    if (value < 55000) return "review";
+    if (value < duration - 4500) return "continue";
     return "ready";
   };
 
@@ -134,6 +136,8 @@ if (trajectory) {
       button.setAttribute("aria-pressed", String(active));
     }
     const item = details[value];
+    duration = item.duration;
+    durationLabel.textContent = `loops in ${Math.round(duration / 1000)} seconds`;
     afterImage.src = item.image;
     afterImage.alt = `${item.label} native TUI after migration from Claude Code`;
     afterCaption.textContent = `After · ${item.label} TUI`;

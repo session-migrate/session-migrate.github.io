@@ -1,6 +1,7 @@
 # session-migrate agent procedure
 
 Canonical project: https://github.com/xhluca/session-migrate
+Published package: https://pypi.org/project/session-migrate/
 CLI reference: https://github.com/xhluca/session-migrate/blob/main/docs/cli-reference.md
 
 Use this procedure when the user asks you to migrate one local coding-agent
@@ -12,9 +13,13 @@ and cursor. Cursor is experimental, version-pinned, and text-only.
 
 ## Procedure
 
-1. Read the current project README and CLI reference. Install the latest
-   released `session-migrate` package in an isolated tool environment and verify
-   its version. Do not run code from an untrusted fork.
+1. Read the current project README and CLI reference. Install the released
+   package from PyPI in a private temporary virtual environment with
+   `python3 -m venv "$TMP/venv"` followed by
+   `"$TMP/venv/bin/python" -m pip install --index-url https://pypi.org/simple/ session-migrate`.
+   Use `"$TMP/venv/bin/session-migrate"` for every operation and verify its
+   version. Do not run code from an untrusted fork. If installation or version
+   verification fails, stop; never reproduce or infer a native schema manually.
 2. Refresh the session catalog across the available default roots. Redirect raw
    catalog/search/show JSON into private mode-0600 temporary files; never stream
    it directly to the terminal or conversation. Locate the requested UUID or
@@ -25,7 +30,8 @@ and cursor. Cursor is experimental, version-pinned, and text-only.
    catalog ID, native session ID, format, kind, lifecycle, status/reason,
    record/byte counts, CLI version, start time, duplicate flag, and history
    mode. Never output catalog title/preview, source path/root/CWD, raw inspect
-   JSON, message text, tool arguments or output, image/audio bodies,
+   JSON, message text, tool names, tool call IDs, tool arguments or output,
+   image/audio bodies,
    credentials, or authentication files. A title or preview can contain the
    first user prompt. Parse private JSON and print only the explicit allowlist.
    Do not copy or modify authentication stores.
@@ -39,7 +45,9 @@ and cursor. Cursor is experimental, version-pinned, and text-only.
    of user/assistant message text or broken tool-call linkage, stop for approval.
 6. Confirm the native target and manifest paths do not exist. Apply the same
    migration with the same UUID and options. Never overwrite an artifact and
-   never modify the source.
+   never modify the source. Only `session-migrate` may create the target: do not
+   invoke the target agent to generate a template, and do not hand-write or
+   patch a native transcript/database.
 7. Verify that dry-run and apply returned the same session ID, target path,
    manifest path, and CWD. Verify the source identity and SHA-256 are unchanged.
    Validate or inspect the new native target without printing conversation

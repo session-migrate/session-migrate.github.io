@@ -15,13 +15,20 @@ and cursor. Cursor is experimental, version-pinned, and text-only.
 1. Read the current project README and CLI reference. Install the latest
    released `session-migrate` package in an isolated tool environment and verify
    its version. Do not run code from an untrusted fork.
-2. Refresh the session catalog across the available default roots. Locate the
-   requested UUID or title in the requested source format. Select exactly one
-   native session. If the result is missing, ambiguous, duplicated, unsupported,
-   corrupt, or busy, stop and ask the user instead of guessing.
-3. Show only content-free structural metadata. Never print message text, tool
-   arguments or output, image/audio bodies, credentials, or authentication
-   files. Do not copy or modify authentication stores.
+2. Refresh the session catalog across the available default roots. Redirect raw
+   catalog/search/show JSON into private mode-0600 temporary files; never stream
+   it directly to the terminal or conversation. Locate the requested UUID or
+   title in the requested source format and select exactly one native session.
+   If the result is missing, ambiguous, duplicated, unsupported, corrupt, or
+   busy, stop and ask the user instead of guessing.
+3. When reporting discovery, allow only structural fields: result count,
+   catalog ID, native session ID, format, kind, lifecycle, status/reason,
+   record/byte counts, CLI version, start time, duplicate flag, and history
+   mode. Never output catalog title/preview, source path/root/CWD, raw inspect
+   JSON, message text, tool arguments or output, image/audio bodies,
+   credentials, or authentication files. A title or preview can contain the
+   first user prompt. Parse private JSON and print only the explicit allowlist.
+   Do not copy or modify authentication stores.
 4. Record the source file identity and SHA-256 before conversion. Generate one
    fresh target UUID before the dry-run. Pass that UUID with `--session-id` to
    both the dry-run and the apply command; never let either command generate a

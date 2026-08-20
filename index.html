@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>session-migrate — Carry the conversation forward</title>
+    <meta name="description" content="Move native coding-agent sessions between Claude Code, Codex, Pi, OpenCode, and GitHub Copilot CLI.">
+    <link rel="canonical" href="https://session-migrate.github.io/">
+    <link rel="icon" href="/favicon.png" type="image/png">
+    <meta name="theme-color" content="#08090b">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="session-migrate — Carry the conversation forward">
+    <meta property="og:description" content="Move native coding-agent sessions between Claude Code, Codex, Pi, OpenCode, and GitHub Copilot CLI.">
+    <meta property="og:url" content="https://session-migrate.github.io/">
+    <meta property="og:image" content="https://session-migrate.github.io/og.png">
+    <meta property="og:image:width" content="1731">
+    <meta property="og:image:height" content="909">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="session-migrate — Carry the conversation forward">
+    <meta name="twitter:description" content="Move native coding-agent sessions between Claude Code, Codex, Pi, OpenCode, and GitHub Copilot CLI.">
+    <meta name="twitter:image" content="https://session-migrate.github.io/og.png">
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <main>
+      <nav class="nav shell" aria-label="Main navigation">
+        <a class="brand" href="#top" aria-label="session-migrate home"><span class="brand-mark" aria-hidden="true">↝</span><span>session-migrate</span></a>
+        <div class="nav-links"><a href="#demo">Demo</a><a href="#compatibility">Compatibility</a><a href="https://github.com/xhluca/session-migrate">GitHub</a></div>
+      </nav>
+
+      <section class="hero shell" id="top">
+        <div class="eyebrow"><span></span> Local sessions, set free</div>
+        <h1>Your conversation<br>should travel with you.</h1>
+        <p class="hero-copy">Move real coding-agent sessions between Claude Code, Codex, Pi, OpenCode, and Copilot—without flattening the useful parts.</p>
+        <div class="hero-actions">
+          <button class="copy-command" type="button" data-copy="uv tool install session-migrate"><code><span>$</span> uv tool install session-migrate</code><b>Copy</b></button>
+          <a class="primary-link" href="https://github.com/xhluca/session-migrate">View on GitHub <span>↗</span></a>
+        </div>
+        <div class="agent-row" aria-label="Supported agents">
+          <div class="agent"><span class="agent-dot"></span> Claude <span class="agent-arrow">→</span></div>
+          <div class="agent"><span class="agent-dot"></span> Codex <span class="agent-arrow">→</span></div>
+          <div class="agent"><span class="agent-dot"></span> Pi <span class="agent-arrow">→</span></div>
+          <div class="agent"><span class="agent-dot"></span> OpenCode <span class="agent-arrow">→</span></div>
+          <div class="agent"><span class="agent-dot"></span> Copilot</div>
+        </div>
+        <div class="terminal" aria-label="Example session migration">
+          <div class="terminal-bar"><div class="window-dots"><i></i><i></i><i></i></div><span>~/project</span><span class="terminal-state">migration complete</span></div>
+          <div class="terminal-body">
+            <p class="terminal-command"><span>❯</span> smigrate transfer c3f7… --from claude --to codex</p>
+            <div class="terminal-output">
+              <p><b>source</b><span>Claude Code · 42 messages · 7 tools</span></p>
+              <p><b>mapping</b><span class="progress"><i></i></span><em>100%</em></p>
+              <p><b>target</b><span>Codex · native rollout ready</span></p>
+            </div>
+            <p class="terminal-success"><span>✓</span> Resume with <strong>codex resume c3f7…</strong></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="stats shell" aria-label="Project validation stats">
+        <div><strong>56k+</strong><span>real sessions audited</span></div>
+        <div><strong>158</strong><span>automated tests</span></div>
+        <div><strong>5</strong><span>native targets</span></div>
+        <div><strong>0</strong><span>source files modified</span></div>
+      </section>
+
+      <section class="section shell" id="demo">
+        <div class="section-heading"><p>REAL CLI · REAL NATIVE OUTPUT</p><h2>From one harness<br>to the next.</h2><span>This recording runs the shipped CLI against a synthetic Claude session, writes a native Codex rollout, and validates the result.</span></div>
+        <div class="video-frame"><div class="video-label"><i></i> LIVE TRAJECTORY</div><video autoplay loop muted playsinline poster="/assets/demo.png"><source src="/assets/demo.mp4" type="video/mp4"></video></div>
+      </section>
+
+      <section class="workflow section" id="how-it-works">
+        <div class="shell workflow-grid">
+          <div class="section-heading compact"><p>HOW IT WORKS</p><h2>Native in.<br>Native out.</h2><span>No transcript-shaped text dumps. Every migration passes through a validated event timeline and a version-aware target writer.</span></div>
+          <div class="stream-card" aria-label="Animated migration pipeline">
+            <div class="stream-labels"><span>SOURCE</span><span>PORTABLE</span><span>TARGET</span></div>
+            <div class="stream-row" style="--delay:0s"><code>user.message</code><i></i><b>MESSAGE</b><i></i><code>response_item</code></div>
+            <div class="stream-row" style="--delay:.55s"><code>tool_use</code><i></i><b>TOOL_CALL</b><i></i><code>function_call</code></div>
+            <div class="stream-row" style="--delay:1.1s"><code>tool_result</code><i></i><b>TOOL_RESULT</b><i></i><code>function_output</code></div>
+            <div class="stream-row" style="--delay:1.65s"><code>compact_summary</code><i></i><b>COMPACTION</b><i></i><code>compacted</code></div>
+            <div class="stream-status"><span>●</span> schema checked · linkage valid · ready to resume</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section shell" id="compatibility">
+        <div class="section-heading horizontal"><div><p>COMPATIBILITY</p><h2>Pick the next agent.</h2></div><span>Claude, Codex, and Pi can be read and written. OpenCode and Copilot are target-only today.</span></div>
+        <div class="matrix-wrap"><table class="matrix">
+          <thead><tr><th>Source ↓ / Target →</th><th>Claude</th><th>Codex</th><th>Pi</th><th>OpenCode</th><th>Copilot</th></tr></thead>
+          <tbody>
+            <tr><td>Claude Code</td><td>—</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+            <tr><td>Codex</td><td class="yes">✓</td><td>—</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+            <tr><td>Pi</td><td class="yes">✓</td><td class="yes">✓</td><td>—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          </tbody>
+        </table></div>
+      </section>
+
+      <section class="feature-grid shell">
+        <article><span>01</span><h3>Keep the useful history</h3><p>Messages, tools, results, images, order, and supported summaries stay connected.</p></article>
+        <article><span>02</span><h3>Find every session</h3><p>Index global, project-local, active, archived, and nested stores—then search by title or ID.</p></article>
+        <article><span>03</span><h3>Know what changed</h3><p>Every unsupported or transformed detail is counted in a content-free manifest.</p></article>
+      </section>
+
+      <section class="install section shell" id="install">
+        <div><p>INSTALL</p><h2>One command.<br>Then keep moving.</h2></div>
+        <div class="install-commands">
+          <button class="copy-command" type="button" data-copy="uv tool install session-migrate"><code><span>$</span> uv tool install session-migrate</code><b>Copy</b></button>
+          <span>or, without uv</span>
+          <button class="copy-command" type="button" data-copy="curl -LsSf https://raw.githubusercontent.com/xhluca/session-migrate/main/install.sh | sh"><code><span>$</span> curl -LsSf …/install.sh | sh</code><b>Copy</b></button>
+          <small>Python 3.11+ · Linux · MIT licensed</small>
+        </div>
+      </section>
+
+      <footer class="footer shell"><a class="brand" href="#top"><span class="brand-mark">↝</span><span>session-migrate</span></a><p>Carry the conversation forward.</p><div><a href="https://github.com/xhluca/session-migrate">GitHub</a><a href="https://pypi.org/project/session-migrate/">PyPI</a><a href="https://github.com/xhluca/session-migrate/tree/main/docs">Docs</a></div></footer>
+    </main>
+    <script src="/script.js" defer></script>
+  </body>
+</html>

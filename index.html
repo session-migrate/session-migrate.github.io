@@ -4,20 +4,20 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>session-migrate — Carry the conversation forward</title>
-    <meta name="description" content="Move native coding-agent sessions between Claude Code, Codex, Pi, OpenCode, and GitHub Copilot CLI.">
+    <meta name="description" content="Move local coding-agent sessions among Claude Code, Codex, Pi, OpenCode, Copilot, Antigravity, and Cursor.">
     <link rel="canonical" href="https://session-migrate.github.io/">
     <link rel="icon" href="/favicon.png" type="image/png">
     <meta name="theme-color" content="#08090b">
     <meta property="og:type" content="website">
     <meta property="og:title" content="session-migrate — Carry the conversation forward">
-    <meta property="og:description" content="Move native coding-agent sessions between Claude Code, Codex, Pi, OpenCode, and GitHub Copilot CLI.">
+    <meta property="og:description" content="Move local coding-agent sessions among Claude Code, Codex, Pi, OpenCode, Copilot, Antigravity, and Cursor.">
     <meta property="og:url" content="https://session-migrate.github.io/">
     <meta property="og:image" content="https://session-migrate.github.io/og.png">
     <meta property="og:image:width" content="1731">
     <meta property="og:image:height" content="909">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="session-migrate — Carry the conversation forward">
-    <meta name="twitter:description" content="Move native coding-agent sessions between Claude Code, Codex, Pi, OpenCode, and GitHub Copilot CLI.">
+    <meta name="twitter:description" content="Move local coding-agent sessions among Claude Code, Codex, Pi, OpenCode, Copilot, Antigravity, and Cursor.">
     <meta name="twitter:image" content="https://session-migrate.github.io/og.png">
     <link rel="stylesheet" href="/styles.css">
   </head>
@@ -31,7 +31,7 @@
       <section class="hero shell" id="top">
         <div class="eyebrow"><span></span> Local sessions, set free</div>
         <h1>Your conversation<br>should travel with you.</h1>
-        <p class="hero-copy">Move real coding-agent sessions between Claude Code, Codex, Pi, OpenCode, and Copilot—without flattening the useful parts.</p>
+        <p class="hero-copy">Move real coding-agent sessions among Claude Code, Codex, Pi, OpenCode, Copilot, Antigravity, and Cursor.</p>
         <div class="hero-actions">
           <button class="copy-command" type="button" data-copy="uv tool install session-migrate"><code><span>$</span> uv tool install session-migrate</code><b>Copy</b></button>
           <a class="primary-link" href="https://github.com/xhluca/session-migrate">View on GitHub <span>↗</span></a>
@@ -41,7 +41,9 @@
           <div class="agent"><span class="agent-dot"></span> Codex <span class="agent-arrow">→</span></div>
           <div class="agent"><span class="agent-dot"></span> Pi <span class="agent-arrow">→</span></div>
           <div class="agent"><span class="agent-dot"></span> OpenCode <span class="agent-arrow">→</span></div>
-          <div class="agent"><span class="agent-dot"></span> Copilot</div>
+          <div class="agent"><span class="agent-dot"></span> Copilot <span class="agent-arrow">→</span></div>
+          <div class="agent"><span class="agent-dot"></span> Antigravity <span class="agent-arrow">→</span></div>
+          <div class="agent"><span class="agent-dot"></span> Cursor*</div>
         </div>
         <div class="terminal" aria-label="Example session migration">
           <div class="terminal-bar"><div class="window-dots"><i></i><i></i><i></i></div><span>~/project</span><span class="terminal-state">migration complete</span></div>
@@ -58,9 +60,9 @@
       </section>
 
       <section class="stats shell" aria-label="Project validation stats">
-        <div><strong>56k+</strong><span>real sessions audited</span></div>
-        <div><strong>158</strong><span>automated tests</span></div>
-        <div><strong>5</strong><span>native targets</span></div>
+        <div><strong>70,915</strong><span>OpenCode sessions indexed</span></div>
+        <div><strong>49</strong><span>source → target routes</span></div>
+        <div><strong>7</strong><span>native formats</span></div>
         <div><strong>0</strong><span>source files modified</span></div>
       </section>
 
@@ -91,20 +93,25 @@
       </section>
 
       <section class="section shell" id="compatibility">
-        <div class="section-heading horizontal"><div><p>COMPATIBILITY</p><h2>Pick the next agent.</h2></div><span>Claude, Codex, and Pi can be read and written. OpenCode and Copilot are target-only today.</span></div>
+        <div class="section-heading horizontal"><div><p>COMPATIBILITY</p><h2>Pick the next agent.</h2></div><span>Every format can be read and written. Cursor support is experimental, version-pinned, and text-only.</span></div>
         <div class="matrix-wrap"><table class="matrix">
-          <thead><tr><th>Source ↓ / Target →</th><th>Claude</th><th>Codex</th><th>Pi</th><th>OpenCode</th><th>Copilot</th></tr></thead>
+          <thead><tr><th>Source ↓ / Target →</th><th>Claude</th><th>Codex</th><th>Pi</th><th>OpenCode</th><th>Copilot</th><th>Antigravity</th><th>Cursor*</th></tr></thead>
           <tbody>
-            <tr><td>Claude Code</td><td>—</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
-            <tr><td>Codex</td><td class="yes">✓</td><td>—</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
-            <tr><td>Pi</td><td class="yes">✓</td><td class="yes">✓</td><td>—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+            <tr><td>Claude Code</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="text">T</td></tr>
+            <tr><td>Codex</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="text">T</td></tr>
+            <tr><td>Pi</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="text">T</td></tr>
+            <tr><td>OpenCode</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="text">T</td></tr>
+            <tr><td>Copilot</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="text">T</td></tr>
+            <tr><td>Antigravity</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="text">T</td></tr>
+            <tr><td>Cursor*</td><td class="text">T</td><td class="text">T</td><td class="text">T</td><td class="text">T</td><td class="text">T</td><td class="text">T</td><td class="text">T</td></tr>
           </tbody>
         </table></div>
+        <p class="matrix-note">✓ portable history · T experimental text-only · diagonal routes are portable rewrites, not byte copies</p>
       </section>
 
       <section class="feature-grid shell">
-        <article><span>01</span><h3>Keep the useful history</h3><p>Messages, tools, results, images, order, and supported summaries stay connected.</p></article>
-        <article><span>02</span><h3>Find every session</h3><p>Index global, project-local, active, archived, and nested stores—then search by title or ID.</p></article>
+        <article><span>01</span><h3>Keep the useful history</h3><p>Messages, tools, results, images, order, and summaries move when both adapters support them.</p></article>
+        <article><span>02</span><h3>Find every session</h3><p>Index every recognized session under configured and discovered roots, then search by title or ID.</p></article>
         <article><span>03</span><h3>Know what changed</h3><p>Every unsupported or transformed detail is counted in a content-free manifest.</p></article>
       </section>
 

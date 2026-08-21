@@ -31,11 +31,16 @@ if (trajectory) {
   const writeNode = trajectory.querySelector("[data-migration-write]");
   const doneNode = trajectory.querySelector("[data-migration-done]");
   const migrationState = trajectory.querySelector("[data-migration-state]");
-  const afterImage = document.querySelector("[data-demo-after-image]");
+  const comparison = document.querySelector(".snapshots");
+  const compareSourceMount = comparison.querySelector("[data-compare-source]");
+  const compareTargetMount = comparison.querySelector("[data-compare-target]");
+  const compareTargetLabel = comparison.querySelector("[data-compare-target-label]");
   const afterCaption = document.querySelector("[data-demo-after-caption]");
   let target = "pi";
   let sourcePlayer = null;
   let targetPlayer = null;
+  let compareSourcePlayer = null;
+  let compareTargetPlayer = null;
   let elapsed = 0;
   let playing = true;
   let visible = true;
@@ -46,13 +51,13 @@ if (trajectory) {
       label: "Pi",
       cast: "/assets/demo-pi.cast",
       launch: "pi --session 2000…0000",
-      image: "/assets/demo-after-pi.png?v=5",
+      compareAt: 20,
     },
     codex: {
       label: "Codex",
       cast: "/assets/demo-codex.cast",
       launch: "codex resume 3000…0000",
-      image: "/assets/demo-after-codex.png?v=5",
+      compareAt: 26,
     },
   };
 
@@ -137,6 +142,42 @@ if (trajectory) {
     setTime(0);
   };
 
+  const mountComparison = () => {
+    if (!comparison.open) {
+      safe(() => compareSourcePlayer && compareSourcePlayer.pause());
+      safe(() => compareTargetPlayer && compareTargetPlayer.pause());
+      return;
+    }
+    if (!window.AsciinemaPlayer) {
+      window.setTimeout(mountComparison, 50);
+      return;
+    }
+    safe(() => compareSourcePlayer && compareSourcePlayer.dispose());
+    safe(() => compareTargetPlayer && compareTargetPlayer.dispose());
+    compareSourceMount.replaceChildren();
+    compareTargetMount.replaceChildren();
+    const options = {
+      autoPlay: false,
+      controls: true,
+      fit: "width",
+      idleTimeLimit: 2,
+      loop: false,
+      theme: "asciinema",
+      terminalFontFamily: "Geist Mono, monospace",
+      terminalLineHeight: 1.38,
+    };
+    compareSourcePlayer = window.AsciinemaPlayer.create(
+      "/assets/demo-claude.cast",
+      compareSourceMount,
+      { ...options, poster: "npt:38" },
+    );
+    compareTargetPlayer = window.AsciinemaPlayer.create(
+      details[target].cast,
+      compareTargetMount,
+      { ...options, poster: `npt:${details[target].compareAt}` },
+    );
+  };
+
   const replay = () => {
     playing = true;
     lastFrame = performance.now();
@@ -156,10 +197,11 @@ if (trajectory) {
     viewport.setAttribute("aria-label", `Claude Code session migrated to ${detail.label} and continued there`);
     for (const node of trajectory.querySelectorAll("[data-demo-target-label], [data-target-window-label], [data-demo-target-caption]")) node.textContent = detail.label;
     launchCommandNode.textContent = detail.launch;
-    afterImage.src = detail.image;
-    afterImage.alt = `${detail.label} native TUI after migration from Claude Code`;
+    compareTargetLabel.textContent = detail.label;
+    compareTargetMount.setAttribute("aria-label", `${detail.label} native terminal recording`);
     afterCaption.textContent = `After · ${detail.label} TUI`;
     mountPlayers();
+    mountComparison();
   };
 
   for (const button of document.querySelectorAll("[data-demo-target]")) {
@@ -173,6 +215,7 @@ if (trajectory) {
     syncPlayers();
   });
   replayButton.addEventListener("click", replay);
+  comparison.addEventListener("toggle", mountComparison);
 
   const observer = new IntersectionObserver(([entry]) => {
     visible = entry.isIntersecting;

@@ -6,7 +6,7 @@
     <title>session-migrate — Carry the conversation forward</title>
     <meta name="description" content="Move coding agent sessions among Claude Code, Codex, Pi, OpenCode, Copilot, Antigravity, and Cursor.">
     <link rel="canonical" href="https://session-migrate.github.io/">
-    <link rel="icon" href="/favicon.png" type="image/png">
+    <link rel="icon" href="/logo-mark.svg" type="image/svg+xml">
     <meta name="theme-color" content="#08090b">
     <meta property="og:type" content="website">
     <meta property="og:title" content="session-migrate — Carry the conversation forward">
@@ -25,11 +25,12 @@
   <body>
     <main>
       <nav class="nav shell" aria-label="Main navigation">
-        <a class="brand" href="#top" aria-label="session-migrate home"><span class="brand-mark" aria-hidden="true">↝</span><span>session-migrate</span></a>
+        <a class="brand" href="#top" aria-label="session-migrate home"><img class="brand-mark" src="/logo-mark.svg" alt="" aria-hidden="true"><span>session-migrate</span></a>
         <div class="nav-links"><a href="#demo">Demo</a><a href="#agent-prompt">Agent prompt</a><a href="#compatibility">Compatibility</a><a href="https://github.com/xhluca/session-migrate">GitHub</a></div>
       </nav>
 
       <section class="hero shell" id="top">
+        <img class="hero-logo" src="/logo-mark.svg" alt="" aria-hidden="true">
         <div class="eyebrow"><span></span> Local sessions, set free</div>
         <h1>Switch agents.<br>Keep your context.</h1>
         <p class="hero-copy">Move coding agent sessions among Claude Code, Codex, Pi, OpenCode, Copilot, Antigravity, and Cursor—then resume where you left off.</p>
@@ -111,10 +112,18 @@
           <figcaption><span><i></i> source · migrate · resume · continue</span><em>Claude Code → <b data-demo-target-caption>Pi</b></em></figcaption>
         </figure>
         <details class="snapshots">
-          <summary><span>Compare the native sessions</span><em>Actual TUI screenshots</em></summary>
+          <summary><span>Compare the native sessions</span><em>Live terminal renders</em></summary>
           <div class="snapshot-grid">
-            <figure><img src="/assets/demo-before.png?v=5" alt="Claude Code native TUI before migration"><figcaption>Before · Claude Code TUI</figcaption></figure>
-            <figure><img src="/assets/demo-after-pi.png?v=5" alt="Pi native TUI after migration from Claude Code" data-demo-after-image><figcaption data-demo-after-caption>After · Pi TUI</figcaption></figure>
+            <figure class="compare-terminal">
+              <div class="native-window-bar"><span class="native-window-dots"><i></i><i></i><i></i></span><b>Claude Code</b><em>native session</em></div>
+              <div class="cast-mount compare-cast" data-compare-source aria-label="Claude Code native terminal recording"></div>
+              <figcaption>Before · Claude Code TUI</figcaption>
+            </figure>
+            <figure class="compare-terminal">
+              <div class="native-window-bar"><span class="native-window-dots"><i></i><i></i><i></i></span><b data-compare-target-label>Pi</b><em>native session</em></div>
+              <div class="cast-mount compare-cast" data-compare-target aria-label="Pi native terminal recording"></div>
+              <figcaption data-demo-after-caption>After · Pi TUI</figcaption>
+            </figure>
           </div>
         </details>
       </section>
@@ -152,7 +161,7 @@
 
       <section class="feature-grid shell">
         <article><span>01</span><h3>Keep the useful history</h3><p>Messages, tools, results, images, order, and summaries move when both adapters support them.</p></article>
-        <article><span>02</span><h3>Find every session</h3><p>Index every recognized session under configured and discovered roots, then search by title or ID.</p></article>
+        <article><span>02</span><h3>Find every session</h3><p>Search native titles and names with order-independent keywords like <code>oauth refresh</code>, then select the exact result.</p></article>
         <article><span>03</span><h3>Know what changed</h3><p>Every unsupported or transformed detail is counted in a content-free manifest.</p></article>
       </section>
 
@@ -166,7 +175,7 @@
         </div>
       </section>
 
-      <footer class="footer shell"><a class="brand" href="#top"><span class="brand-mark">↝</span><span>session-migrate</span></a><p>Carry the conversation forward.</p><div><a href="https://github.com/xhluca/session-migrate">GitHub</a><a href="https://pypi.org/project/session-migrate/">PyPI</a><a href="https://github.com/xhluca/session-migrate/tree/main/docs">Docs</a></div></footer>
+      <footer class="footer shell"><a class="brand" href="#top"><img class="brand-mark" src="/logo-mark.svg" alt="" aria-hidden="true"><span>session-migrate</span></a><p>Carry the conversation forward.</p><div><a href="https://github.com/xhluca/session-migrate">GitHub</a><a href="https://pypi.org/project/session-migrate/">PyPI</a><a href="https://github.com/xhluca/session-migrate/tree/main/docs">Docs</a></div></footer>
     </main>
     <script src="/asciinema-player.min.js" defer></script>
     <script src="/script.js" defer></script>

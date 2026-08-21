@@ -14,57 +14,152 @@ for (const button of document.querySelectorAll("[data-copy]")) {
 
 const trajectory = document.querySelector("[data-trajectory]");
 if (trajectory) {
-  const video = trajectory.querySelector("[data-demo-video]");
-  const source = trajectory.querySelector("[data-demo-video-source]");
+  const DURATION = 43;
+  const TARGET_START = 17.5;
+  const grid = trajectory.querySelector("[data-handoff-grid]");
+  const viewport = trajectory.querySelector("[data-handoff-viewport]");
+  const sourceMount = trajectory.querySelector("[data-source-cast]");
+  const targetMount = trajectory.querySelector("[data-target-cast]");
   const progress = trajectory.querySelector("[data-trajectory-progress]");
   const pauseButton = trajectory.querySelector('[data-trajectory-action="pause"]');
   const replayButton = trajectory.querySelector('[data-trajectory-action="replay"]');
-  const targetLabel = trajectory.querySelector("[data-demo-target-label]");
-  const speedLabel = trajectory.querySelector("[data-demo-speed]");
+  const stageLabel = trajectory.querySelector("[data-demo-stage]");
+  const commandNode = trajectory.querySelector("[data-migration-command]");
+  const launchNode = trajectory.querySelector("[data-migration-launch]");
+  const launchCommandNode = trajectory.querySelector("[data-migration-launch-command]");
+  const scanNode = trajectory.querySelector("[data-migration-scan]");
+  const writeNode = trajectory.querySelector("[data-migration-write]");
+  const doneNode = trajectory.querySelector("[data-migration-done]");
+  const migrationState = trajectory.querySelector("[data-migration-state]");
   const afterImage = document.querySelector("[data-demo-after-image]");
   const afterCaption = document.querySelector("[data-demo-after-caption]");
+  let target = "pi";
+  let sourcePlayer = null;
+  let targetPlayer = null;
+  let elapsed = 0;
+  let playing = true;
+  let visible = true;
+  let lastFrame = 0;
 
   const details = {
     pi: {
       label: "Pi",
-      video: "/assets/demo-pi.mp4?v=5",
+      cast: "/assets/demo-pi.cast",
+      launch: "pi --session 2000…0000",
       image: "/assets/demo-after-pi.png?v=5",
     },
     codex: {
       label: "Codex",
-      video: "/assets/demo-codex.mp4?v=5",
+      cast: "/assets/demo-codex.cast",
+      launch: "codex resume 3000…0000",
       image: "/assets/demo-after-codex.png?v=5",
     },
   };
 
-  const updatePlaybackState = () => {
-    pauseButton.textContent = video.paused ? "Play" : "Pause";
-    pauseButton.setAttribute(
-      "aria-label",
-      video.paused ? "Play native TUI recording" : "Pause native TUI recording",
-    );
+  const phaseAt = (time) => {
+    if (time < 8) return "source";
+    if (time < 10.5) return "pullback";
+    if (time < 16) return "convert";
+    if (time < 18.5) return "launch";
+    if (time < 23.5) return "overlap";
+    return "target";
   };
 
-  const selectTarget = (target) => {
+  const safe = (fn) => {
+    try { fn(); } catch (_) {}
+  };
+
+  const syncPlayers = () => {
+    if (!sourcePlayer || !targetPlayer) return;
+    if (!playing || !visible) {
+      safe(() => sourcePlayer.pause());
+      safe(() => targetPlayer.pause());
+    } else if (elapsed < TARGET_START) {
+      safe(() => targetPlayer.pause());
+      safe(() => sourcePlayer.play());
+    } else {
+      safe(() => sourcePlayer.pause());
+      safe(() => targetPlayer.play());
+    }
+  };
+
+  const update = () => {
     const detail = details[target];
-    trajectory.dataset.target = target;
+    const phase = phaseAt(elapsed);
+    const command = `smigrate transfer 1000…0000 --from claude --to ${target}`;
+    const typing = Math.max(0, Math.min(1, (elapsed - 10.8) / 2.7));
+    trajectory.dataset.phase = phase;
+    grid.dataset.phase = phase;
+    progress.style.width = `${elapsed / DURATION * 100}%`;
+    commandNode.textContent = command.slice(0, Math.floor(command.length * typing));
+    scanNode.classList.toggle("is-visible", elapsed >= 13.4);
+    writeNode.classList.toggle("is-visible", elapsed >= 14.2);
+    doneNode.classList.toggle("is-visible", elapsed >= 15);
+    launchNode.classList.toggle("is-visible", elapsed >= 15);
+    migrationState.textContent = elapsed >= 15 ? "complete" : "working";
+    stageLabel.textContent = phase === "source" ? "Start in Claude" : phase === "convert" ? "Migrate" : phase === "overlap" ? "Same history" : `Continue in ${detail.label}`;
+  };
+
+  const updatePlaybackState = () => {
+    pauseButton.textContent = playing ? "Pause" : "Play";
+    pauseButton.setAttribute("aria-label", playing ? "Pause the migration story" : "Play the migration story");
+  };
+
+  const setTime = (time) => {
+    elapsed = Math.max(0, Math.min(DURATION, time));
+    safe(() => sourcePlayer.seek(elapsed * 2));
+    safe(() => targetPlayer.seek(Math.max(0, elapsed - TARGET_START)));
+    update();
+    syncPlayers();
+  };
+
+  const mountPlayers = () => {
+    if (!window.AsciinemaPlayer) {
+      window.setTimeout(mountPlayers, 50);
+      return;
+    }
+    safe(() => sourcePlayer && sourcePlayer.dispose());
+    safe(() => targetPlayer && targetPlayer.dispose());
+    sourceMount.replaceChildren();
+    targetMount.replaceChildren();
+    const options = {
+      autoPlay: false,
+      controls: false,
+      fit: "width",
+      idleTimeLimit: 2,
+      loop: false,
+      theme: "asciinema",
+      terminalFontFamily: "Geist Mono, monospace",
+      terminalLineHeight: 1.38,
+    };
+    sourcePlayer = window.AsciinemaPlayer.create("/assets/demo-claude.cast", sourceMount, { ...options, speed: 2 });
+    targetPlayer = window.AsciinemaPlayer.create(details[target].cast, targetMount, { ...options, speed: 1 });
+    setTime(0);
+  };
+
+  const replay = () => {
+    playing = true;
+    lastFrame = performance.now();
+    setTime(0);
+    updatePlaybackState();
+  };
+
+  const selectTarget = (nextTarget) => {
+    target = nextTarget;
+    const detail = details[nextTarget];
+    trajectory.dataset.target = nextTarget;
     for (const button of document.querySelectorAll("[data-demo-target]")) {
-      const active = button.dataset.demoTarget === target;
+      const active = button.dataset.demoTarget === nextTarget;
       button.classList.toggle("is-active", active);
       button.setAttribute("aria-pressed", String(active));
     }
-    source.src = detail.video;
-    video.setAttribute(
-      "aria-label",
-      `Real terminal recording of a Claude Code session migrated to ${detail.label} and continued there`,
-    );
-    video.load();
-    void video.play().catch(() => updatePlaybackState());
-    targetLabel.textContent = detail.label;
-    speedLabel.textContent = `Claude 2× · ${detail.label} 1×`;
+    viewport.setAttribute("aria-label", `Claude Code session migrated to ${detail.label} and continued there`);
+    for (const node of trajectory.querySelectorAll("[data-demo-target-label], [data-target-window-label], [data-demo-target-caption]")) node.textContent = detail.label;
+    launchCommandNode.textContent = detail.launch;
     afterImage.src = detail.image;
     afterImage.alt = `${detail.label} native TUI after migration from Claude Code`;
     afterCaption.textContent = `After · ${detail.label} TUI`;
+    mountPlayers();
   };
 
   for (const button of document.querySelectorAll("[data-demo-target]")) {
@@ -72,17 +167,41 @@ if (trajectory) {
   }
 
   pauseButton.addEventListener("click", () => {
-    if (video.paused) void video.play();
-    else video.pause();
+    playing = !playing;
+    lastFrame = performance.now();
+    updatePlaybackState();
+    syncPlayers();
   });
-  replayButton.addEventListener("click", () => {
-    video.currentTime = 0;
-    void video.play();
-  });
-  video.addEventListener("play", updatePlaybackState);
-  video.addEventListener("pause", updatePlaybackState);
-  video.addEventListener("timeupdate", () => {
-    progress.style.width = `${video.duration ? video.currentTime / video.duration * 100 : 0}%`;
+  replayButton.addEventListener("click", replay);
+
+  const observer = new IntersectionObserver(([entry]) => {
+    visible = entry.isIntersecting;
+    lastFrame = performance.now();
+    syncPlayers();
+  }, { threshold: 0.25 });
+  observer.observe(trajectory);
+
+  const tick = (now) => {
+    const previous = lastFrame || now;
+    lastFrame = now;
+    if (playing && visible && sourcePlayer && targetPlayer) {
+      elapsed += Math.min((now - previous) / 1000, 0.12);
+      if (elapsed >= DURATION) setTime(0);
+      else update();
+      syncPlayers();
+    }
+    window.requestAnimationFrame(tick);
+  };
+
+  window.__sessionMigrateDemo = {
+    setTime,
+    play() { playing = true; updatePlaybackState(); syncPlayers(); },
+    pause() { playing = false; updatePlaybackState(); syncPlayers(); },
+  };
+
+  window.addEventListener("load", () => {
+    mountPlayers();
+    window.requestAnimationFrame(tick);
   });
   updatePlaybackState();
 }

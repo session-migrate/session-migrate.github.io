@@ -19,6 +19,7 @@
     <meta name="twitter:title" content="session-migrate — Carry the conversation forward">
     <meta name="twitter:description" content="Move coding agent sessions among Claude Code, Codex, Pi, OpenCode, Copilot, Antigravity, and Cursor.">
     <meta name="twitter:image" content="https://session-migrate.github.io/og.png">
+    <link rel="stylesheet" href="/asciinema-player.css">
     <link rel="stylesheet" href="/styles.css">
   </head>
   <body>
@@ -69,23 +70,45 @@
       </section>
 
       <section class="section shell" id="demo">
-        <div class="section-heading"><p>NATIVE CLI · NATIVE OUTPUT</p><h2>From one harness<br>to the next.</h2><span>Watch the actual Claude Code and target TUIs—not a simulated terminal. Claude review plays at 2×; Pi and Codex continue at 1×.</span></div>
+        <div class="section-heading"><p>NATIVE CLI · NATIVE OUTPUT</p><h2>From one harness<br>to the next.</h2><span>Watch the actual Claude Code and target TUIs. The migration command runs between them, then the same conversation continues.</span></div>
         <div class="demo-target-toggle" role="group" aria-label="Choose demo target">
           <button type="button" class="is-active" aria-pressed="true" data-demo-target="pi">Claude → Pi</button>
           <button type="button" aria-pressed="false" data-demo-target="codex">Claude → Codex</button>
         </div>
-        <figure class="trajectory-frame" data-target="pi" data-trajectory>
+        <figure class="trajectory-frame" data-target="pi" data-phase="source" data-trajectory>
           <div class="trajectory-topbar">
-            <div class="trajectory-label"><i></i> REAL NATIVE TUIS · 1440P</div>
-            <div class="trajectory-controls"><span data-demo-speed>Claude 2× · Pi 1×</span><button type="button" data-trajectory-action="pause" aria-label="Pause native TUI recording">Pause</button><button type="button" data-trajectory-action="replay" aria-label="Replay native TUI recording">Replay</button></div>
+            <div class="trajectory-label"><i></i> ACTUAL NATIVE TUIS · INTERACTIVE CAST</div>
+            <div class="trajectory-controls"><span data-demo-stage>Start in Claude</span><button type="button" data-trajectory-action="pause" aria-label="Pause the migration story">Pause</button><button type="button" data-trajectory-action="replay" aria-label="Replay the migration story">Replay</button></div>
           </div>
-          <div class="trajectory-video-shell">
-            <video muted autoplay loop playsinline preload="metadata" poster="/assets/demo-before.png?v=5" aria-label="Real terminal recording of a Claude Code session migrated to Pi and continued there" data-demo-video>
-              <source src="/assets/demo-pi.mp4?v=5" type="video/mp4" data-demo-video-source>
-            </video>
+          <div class="handoff-viewport" aria-label="Claude Code session migrated to Pi and continued there" data-handoff-viewport>
+            <div class="handoff-grid" data-phase="source" data-handoff-grid>
+              <div class="native-window native-window-source">
+                <div class="native-window-bar"><span class="native-window-dots"><i></i><i></i><i></i></span><b>Claude Code</b><em>source session</em></div>
+                <div class="cast-mount" data-source-cast></div>
+                <div class="history-marker" aria-hidden="true"><span>shared history</span></div>
+              </div>
+              <div class="migration-window">
+                <div class="native-window-bar"><span class="native-window-dots"><i></i><i></i><i></i></span><b>session-migrate</b><em data-migration-state>working</em></div>
+                <div class="migration-body">
+                  <p class="migration-command"><span>$</span> <span data-migration-command></span><i></i></p>
+                  <div class="migration-output">
+                    <p data-migration-scan><b>source</b><span>Claude Code session found</span></p>
+                    <p data-migration-write><b>target</b><span><b data-demo-target-label>Pi</b> native session written</span></p>
+                    <p class="migration-done" data-migration-done><b>✓</b><span>source unchanged · ready to resume</span></p>
+                  </div>
+                  <p class="migration-launch" data-migration-launch><span>$</span> <span data-migration-launch-command>pi --session 2000…0000</span></p>
+                </div>
+              </div>
+              <div class="native-window native-window-target">
+                <div class="native-window-bar"><span class="native-window-dots"><i></i><i></i><i></i></span><b data-target-window-label>Pi</b><em>resumed session</em></div>
+                <div class="cast-mount" data-target-cast></div>
+                <div class="history-marker" aria-hidden="true"><span>shared history</span></div>
+              </div>
+              <div class="history-bridge" aria-hidden="true"><i></i><span>same conversation</span><i></i></div>
+            </div>
           </div>
           <div class="trajectory-progress" aria-hidden="true"><i data-trajectory-progress></i></div>
-          <figcaption><span><i></i> actual Claude Code and <b data-demo-target-label>Pi</b> terminal sessions</span><em>Claude review 2× · target continuation 1×</em></figcaption>
+          <figcaption><span><i></i> source · migrate · resume · continue</span><em>Claude Code → <b data-demo-target-caption>Pi</b></em></figcaption>
         </figure>
         <details class="snapshots">
           <summary><span>Compare the native sessions</span><em>Actual TUI screenshots</em></summary>
@@ -145,6 +168,7 @@
 
       <footer class="footer shell"><a class="brand" href="#top"><span class="brand-mark">↝</span><span>session-migrate</span></a><p>Carry the conversation forward.</p><div><a href="https://github.com/xhluca/session-migrate">GitHub</a><a href="https://pypi.org/project/session-migrate/">PyPI</a><a href="https://github.com/xhluca/session-migrate/tree/main/docs">Docs</a></div></footer>
     </main>
+    <script src="/asciinema-player.min.js" defer></script>
     <script src="/script.js" defer></script>
   </body>
 </html>

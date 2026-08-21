@@ -67,12 +67,12 @@
         <div class="section-heading horizontal"><div><p>DELEGATE THE MIGRATION</p><h2>Tell your agent.<br>Let it move.</h2></div><span>Pick a source and target, copy the sentence, then replace its final placeholder with the session UUID or title.</span></div>
         <div class="agent-prompt-card" data-agent-prompt>
           <div class="agent-prompt-bar"><span>INSTRUCTION.txt</span><em>Choose a route, then copy</em></div>
-          <pre aria-live="polite"><code data-agent-prompt-output>Follow https://session-migrate.github.io/llms.txt to migrate a session from Claude Code to Codex. Session: [UUID OR TITLE]</code></pre>
+          <pre aria-live="polite"><code data-agent-prompt-output>Follow <span class="prompt-url">https://session-migrate.github.io/llms.txt</span> to migrate a session from <span class="prompt-source" data-agent-prompt-source-label>Claude Code</span> to <span class="prompt-target" data-agent-prompt-target-label>Codex</span>. Session: <span class="prompt-session">[UUID OR TITLE]</span></code></pre>
           <div class="agent-prompt-controls">
             <div class="agent-route" aria-label="Migration route">
-              <label><span>Source</span><select data-agent-prompt-source aria-label="Source harness"><option value="claude" selected>Claude Code</option><option value="codex">Codex</option><option value="pi">Pi</option><option value="opencode">OpenCode</option><option value="copilot">Copilot</option><option value="antigravity">Antigravity</option><option value="cursor">Cursor</option></select></label>
+              <label><span>Source</span><select class="source-select" data-agent-prompt-source aria-label="Source harness"><option value="claude" selected>Claude Code</option><option value="codex">Codex</option><option value="pi">Pi</option><option value="opencode">OpenCode</option><option value="copilot">Copilot</option><option value="antigravity">Antigravity</option><option value="cursor">Cursor</option></select></label>
               <i aria-hidden="true">→</i>
-              <label><span>Target</span><select data-agent-prompt-target aria-label="Target harness"><option value="claude">Claude Code</option><option value="codex" selected>Codex</option><option value="pi">Pi</option><option value="opencode">OpenCode</option><option value="copilot">Copilot</option><option value="antigravity">Antigravity</option><option value="cursor">Cursor</option></select></label>
+              <label><span>Target</span><select class="target-select" data-agent-prompt-target aria-label="Target harness"><option value="claude">Claude Code</option><option value="codex" selected>Codex</option><option value="pi">Pi</option><option value="opencode">OpenCode</option><option value="copilot">Copilot</option><option value="antigravity">Antigravity</option><option value="cursor">Cursor</option></select></label>
             </div>
             <button type="button" class="agent-prompt-copy" aria-label="Copy coding-agent instruction" data-agent-prompt-copy>Copy instruction</button>
           </div>

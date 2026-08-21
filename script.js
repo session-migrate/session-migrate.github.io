@@ -17,6 +17,8 @@ if (agentPrompt) {
   const source = agentPrompt.querySelector("[data-agent-prompt-source]");
   const target = agentPrompt.querySelector("[data-agent-prompt-target]");
   const output = agentPrompt.querySelector("[data-agent-prompt-output]");
+  const sourceLabel = agentPrompt.querySelector("[data-agent-prompt-source-label]");
+  const targetLabel = agentPrompt.querySelector("[data-agent-prompt-target-label]");
   const copyButton = agentPrompt.querySelector("[data-agent-prompt-copy]");
   const labels = {
     claude: "Claude Code",
@@ -29,7 +31,8 @@ if (agentPrompt) {
   };
 
   const updatePrompt = () => {
-    output.textContent = `Follow https://session-migrate.github.io/llms.txt to migrate a session from ${labels[source.value]} to ${labels[target.value]}. Session: [UUID OR TITLE]`;
+    sourceLabel.textContent = labels[source.value];
+    targetLabel.textContent = labels[target.value];
   };
 
   source.addEventListener("change", updatePrompt);

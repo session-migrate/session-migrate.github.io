@@ -37,7 +37,7 @@
         <h1>Switch agents.<br>Keep your context.</h1>
         <p class="hero-copy">Move coding agent sessions among Claude Code, Codex, Pi, OpenCode, Copilot, Antigravity, Mistral Vibe, and Cursor—then resume where you left off.</p>
         <div class="hero-actions">
-          <button class="copy-command" type="button" data-copy="uv tool install session-migrate"><code><span>$</span> uv tool install session-migrate</code><b>Copy</b></button>
+          <button class="copy-command" type="button" data-copy="curl -LsSf https://session-migrate.github.io/install.sh | sh"><code><span>$</span> curl -LsSf session-migrate.github.io/install.sh | sh</code><b>Copy</b></button>
           <a class="primary-link" href="https://github.com/xhluca/session-migrate">View on GitHub <span>↗</span></a>
         </div>
         <div class="agent-row" aria-label="Supported agents">
@@ -90,13 +90,14 @@
         <figure class="trajectory-frame" data-target="pi" data-phase="source" data-trajectory>
           <div class="trajectory-topbar">
             <div class="trajectory-label"><i></i> ACTUAL NATIVE TUIS · INTERACTIVE CAST</div>
-            <div class="trajectory-controls"><span data-demo-stage>Start in Claude</span><button type="button" data-trajectory-action="pause" aria-label="Pause the migration story">Pause</button><button type="button" data-trajectory-action="replay" aria-label="Replay the migration story">Replay</button></div>
+            <div class="trajectory-controls"><span data-demo-stage>Work in Claude</span><button type="button" data-trajectory-action="rewind" aria-label="Rewind the migration story by five seconds">−5s</button><button type="button" data-trajectory-action="pause" aria-label="Pause the migration story">Pause</button><button type="button" data-trajectory-action="forward" aria-label="Advance the migration story by five seconds">+5s</button><button type="button" data-trajectory-action="replay" aria-label="Replay the migration story">Replay</button></div>
           </div>
           <div class="handoff-viewport" aria-label="Claude Code session migrated to Pi and continued there" data-handoff-viewport>
             <div class="handoff-grid" data-phase="source" data-handoff-grid>
               <div class="native-window native-window-source">
                 <div class="native-window-bar"><span class="native-window-dots"><i></i><i></i><i></i></span><b>Claude Code</b><em>source session</em></div>
                 <div class="cast-mount" data-source-cast></div>
+                <div class="context-limit" data-context-limit aria-live="polite"><b>Claude Code context window full</b><span>Continue this session in <i data-context-target>Pi</i></span></div>
                 <div class="history-marker" data-anchored="false" aria-hidden="true"><span>shared history</span></div>
               </div>
               <div class="migration-window">
@@ -106,7 +107,7 @@
                   <div class="migration-output">
                     <p data-migration-scan><b>source</b><span>Claude Code session found</span></p>
                     <p data-migration-write><b>target</b><span><b data-demo-target-label>Pi</b> native session written</span></p>
-                    <p class="migration-done" data-migration-done><b>✓</b><span>source unchanged · ready to resume</span></p>
+                    <p class="migration-done" data-migration-done><b>✓</b><span>history continued · ready to resume</span></p>
                   </div>
                   <p class="migration-launch" data-migration-launch><span>$</span> <span data-migration-launch-command>pi --session 2000…0000</span></p>
                 </div>
@@ -119,7 +120,7 @@
               <div class="history-bridge" aria-hidden="true"><i></i><span>same history</span><i></i></div>
             </div>
           </div>
-          <div class="trajectory-progress" aria-hidden="true"><i data-trajectory-progress></i></div>
+          <label class="trajectory-scrubber"><span class="sr-only">Migration story position</span><input type="range" min="0" max="50" step="0.1" value="0" aria-label="Seek through the migration story" data-trajectory-progress></label>
           <figcaption><span><i></i> source · migrate · resume · continue</span><em>Claude Code → <b data-demo-target-caption>Pi</b></em></figcaption>
         </figure>
         <details class="snapshots">
@@ -139,20 +140,6 @@
         </details>
       </section>
 
-      <section class="workflow section" id="how-it-works">
-        <div class="shell workflow-grid">
-          <div class="section-heading compact"><p>HOW IT WORKS</p><h2>Read. Convert.<br>Resume.</h2><span>session-migrate reads the source agent's session, converts the history both agents understand, and writes a native session the target agent can resume.</span></div>
-          <div class="stream-card" aria-label="Animated migration pipeline">
-            <div class="pipeline-step"><b>01</b><div><span>Read the source</span><p>Open the agent's native session without changing it.</p></div></div>
-            <i class="pipeline-arrow" aria-hidden="true"></i>
-            <div class="pipeline-step"><b>02</b><div><span>Convert the history</span><p>Preserve supported messages, tools, images, and order.</p></div></div>
-            <i class="pipeline-arrow" aria-hidden="true"></i>
-            <div class="pipeline-step"><b>03</b><div><span>Write the target</span><p>Create a native session the next agent can resume.</p></div></div>
-            <div class="stream-status"><span>●</span> source unchanged · ready to resume</div>
-          </div>
-        </div>
-      </section>
-
       <section class="section shell" id="compatibility">
         <div class="section-heading horizontal"><div><p>COMPATIBILITY</p><h2>Pick the next agent.</h2></div><span>Move between any two listed agents. A same-agent move creates a fresh native session instead of copying bytes.</span></div>
         <div class="capability-list" aria-label="Supported coding agents">
@@ -168,18 +155,12 @@
         <p class="capability-note">All 64 source → target routes are available. Cursor is version-pinned and experimental.</p>
       </section>
 
-      <section class="feature-grid shell">
-        <article><span>01</span><h3>Keep the useful history</h3><p>Messages, tools, results, images, order, and summaries move when both adapters support them.</p></article>
-        <article><span>02</span><h3>Find every session</h3><p>Search native titles and names with order-independent keywords like <code>oauth refresh</code>, then select the exact result.</p></article>
-        <article><span>03</span><h3>Know what changed</h3><p>Every unsupported or transformed detail is counted in a content-free manifest.</p></article>
-      </section>
-
       <section class="install section shell" id="install">
         <div><p>INSTALL</p><h2>One command.<br>Then keep moving.</h2></div>
         <div class="install-commands">
-          <button class="copy-command" type="button" data-copy="uv tool install session-migrate"><code><span>$</span> uv tool install session-migrate</code><b>Copy</b></button>
-          <span>or, without uv</span>
-          <button class="copy-command" type="button" data-copy="curl -LsSf https://session-migrate.github.io/install.sh | sh"><code><span>$</span> curl -LsSf session-migrate.github.io/install.sh | sh</code><b>Copy</b></button>
+          <div class="install-choice"><span>Standalone installer</span><button class="copy-command" type="button" data-copy="curl -LsSf https://session-migrate.github.io/install.sh | sh"><code><span>$</span> curl -LsSf session-migrate.github.io/install.sh | sh</code><b>Copy</b></button></div>
+          <div class="install-choice"><span>With uv</span><button class="copy-command" type="button" data-copy="uv tool install session-migrate"><code><span>$</span> uv tool install session-migrate</code><b>Copy</b></button></div>
+          <div class="install-choice"><span>Give it to a coding agent</span><button class="copy-command" type="button" data-copy="Follow https://session-migrate.github.io/llms.txt to migrate my session."><code><span>&gt;</span> Follow session-migrate.github.io/llms.txt to migrate my session.</code><b>Copy</b></button></div>
           <small>Python 3.11+ · Linux · MIT licensed</small>
         </div>
       </section>

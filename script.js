@@ -52,9 +52,11 @@ if (agentPrompt) {
 
 const trajectory = document.querySelector("[data-trajectory]");
 if (trajectory) {
-  const DURATION = 43;
-  const TARGET_START = 17.5;
-  const HIGHLIGHT_START = 20;
+  const DURATION = 50;
+  const SOURCE_STOP = 11.25;
+  const SOURCE_SPEED = 3.5;
+  const TARGET_START = 25;
+  const HIGHLIGHT_START = 27;
   const SHARED_HISTORY_START = 'So I read "backward compatible"';
   const SHARED_HISTORY_END = "two distinguishable cases.";
   const grid = trajectory.querySelector("[data-handoff-grid]");
@@ -62,7 +64,11 @@ if (trajectory) {
   const sourceMount = trajectory.querySelector("[data-source-cast]");
   const targetMount = trajectory.querySelector("[data-target-cast]");
   const progress = trajectory.querySelector("[data-trajectory-progress]");
+  const contextLimit = trajectory.querySelector("[data-context-limit]");
+  const contextTarget = trajectory.querySelector("[data-context-target]");
+  const rewindButton = trajectory.querySelector('[data-trajectory-action="rewind"]');
   const pauseButton = trajectory.querySelector('[data-trajectory-action="pause"]');
+  const forwardButton = trajectory.querySelector('[data-trajectory-action="forward"]');
   const replayButton = trajectory.querySelector('[data-trajectory-action="replay"]');
   const stageLabel = trajectory.querySelector("[data-demo-stage]");
   const commandNode = trajectory.querySelector("[data-migration-command]");
@@ -104,11 +110,11 @@ if (trajectory) {
   };
 
   const phaseAt = (time) => {
-    if (time < 8) return "source";
-    if (time < 10.5) return "pullback";
-    if (time < 16) return "convert";
-    if (time < 18.5) return "launch";
-    if (time < 23.5) return "overlap";
+    if (time < 8.5) return "source";
+    if (time < 12) return "pullback";
+    if (time < 22.5) return "convert";
+    if (time < 25.5) return "launch";
+    if (time < 31) return "overlap";
     return "target";
   };
 
@@ -166,9 +172,12 @@ if (trajectory) {
     if (!playing || !visible) {
       safe(() => sourcePlayer.pause());
       safe(() => targetPlayer.pause());
-    } else if (elapsed < TARGET_START) {
+    } else if (elapsed < SOURCE_STOP) {
       safe(() => targetPlayer.pause());
       safe(() => sourcePlayer.play());
+    } else if (elapsed < TARGET_START) {
+      safe(() => sourcePlayer.pause());
+      safe(() => targetPlayer.pause());
     } else {
       safe(() => sourcePlayer.pause());
       safe(() => targetPlayer.play());
@@ -179,17 +188,20 @@ if (trajectory) {
     const detail = details[target];
     const phase = phaseAt(elapsed);
     const command = `smigrate transfer 1000…0000 --from claude --to ${target}`;
-    const typing = Math.max(0, Math.min(1, (elapsed - 10.8) / 2.7));
+    const typing = Math.max(0, Math.min(1, (elapsed - 12.5) / 6));
+    const showContextLimit = elapsed >= 7 && elapsed < 12.8;
     trajectory.dataset.phase = phase;
     grid.dataset.phase = phase;
-    progress.style.width = `${elapsed / DURATION * 100}%`;
+    progress.value = elapsed;
+    progress.style.setProperty("--story-progress", `${elapsed / DURATION * 100}%`);
+    contextLimit.classList.toggle("is-visible", showContextLimit);
     commandNode.textContent = command.slice(0, Math.floor(command.length * typing));
-    scanNode.classList.toggle("is-visible", elapsed >= 13.4);
-    writeNode.classList.toggle("is-visible", elapsed >= 14.2);
-    doneNode.classList.toggle("is-visible", elapsed >= 15);
-    launchNode.classList.toggle("is-visible", elapsed >= 15);
-    migrationState.textContent = elapsed >= 15 ? "complete" : "working";
-    stageLabel.textContent = phase === "source" ? "Start in Claude" : phase === "convert" ? "Migrate" : phase === "overlap" ? "Same history" : `Continue in ${detail.label}`;
+    scanNode.classList.toggle("is-visible", elapsed >= 19);
+    writeNode.classList.toggle("is-visible", elapsed >= 20.3);
+    doneNode.classList.toggle("is-visible", elapsed >= 21.5);
+    launchNode.classList.toggle("is-visible", elapsed >= 21.5);
+    migrationState.textContent = elapsed >= 21.5 ? "complete" : "working";
+    stageLabel.textContent = showContextLimit ? "Claude context is full" : phase === "source" ? "Work in Claude" : phase === "pullback" ? "Hand off the session" : phase === "convert" ? "Migrate the session" : phase === "launch" ? "Resume native session" : phase === "overlap" ? "Same history" : `Continue in ${detail.label}`;
     if (phase === "overlap") scheduleHistoryAnchors();
   };
 
@@ -200,7 +212,7 @@ if (trajectory) {
 
   const setTime = (time) => {
     elapsed = Math.max(0, Math.min(DURATION, time));
-    safe(() => sourcePlayer.seek(elapsed * 2));
+    safe(() => sourcePlayer.seek(Math.min(elapsed, SOURCE_STOP) * SOURCE_SPEED));
     safe(() => targetPlayer.seek(Math.max(0, elapsed - TARGET_START)));
     update();
     syncPlayers();
@@ -226,7 +238,7 @@ if (trajectory) {
       terminalFontFamily: "Geist Mono, monospace",
       terminalLineHeight: 1.38,
     };
-    sourcePlayer = window.AsciinemaPlayer.create("/assets/demo-claude.cast", sourceMount, { ...options, speed: 2 });
+    sourcePlayer = window.AsciinemaPlayer.create("/assets/demo-claude.cast", sourceMount, { ...options, speed: SOURCE_SPEED });
     targetPlayer = window.AsciinemaPlayer.create(details[target].cast, targetMount, { ...options, speed: 1 });
     setTime(0);
   };
@@ -286,6 +298,7 @@ if (trajectory) {
     viewport.setAttribute("aria-label", `Claude Code session migrated to ${detail.label} and continued there`);
     for (const node of trajectory.querySelectorAll("[data-demo-target-label], [data-target-window-label], [data-demo-target-caption]")) node.textContent = detail.label;
     launchCommandNode.textContent = detail.launch;
+    contextTarget.textContent = detail.label;
     compareTargetLabel.textContent = detail.label;
     compareTargetMount.setAttribute("aria-label", `${detail.label} native terminal recording`);
     afterCaption.textContent = `After · ${detail.label} TUI`;
@@ -303,6 +316,14 @@ if (trajectory) {
     updatePlaybackState();
     syncPlayers();
   });
+  rewindButton.addEventListener("click", () => setTime(elapsed - 5));
+  forwardButton.addEventListener("click", () => setTime(elapsed + 5));
+  progress.addEventListener("pointerdown", () => {
+    playing = false;
+    updatePlaybackState();
+    syncPlayers();
+  });
+  progress.addEventListener("input", () => setTime(Number(progress.value)));
   replayButton.addEventListener("click", replay);
   comparison.addEventListener("toggle", mountComparison);
 

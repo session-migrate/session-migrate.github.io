@@ -27,6 +27,7 @@ if (agentPrompt) {
     opencode: "OpenCode",
     copilot: "Copilot",
     antigravity: "Antigravity",
+    vibe: "Mistral Vibe",
     cursor: "Cursor",
   };
 

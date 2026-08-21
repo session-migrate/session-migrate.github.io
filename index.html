@@ -59,13 +59,6 @@
         </div>
       </section>
 
-      <section class="stats shell" aria-label="Project validation stats">
-        <div><strong>70,915</strong><span>OpenCode sessions indexed</span></div>
-        <div><strong>49</strong><span>source → target routes</span></div>
-        <div><strong>7</strong><span>native formats</span></div>
-        <div><strong>0</strong><span>source files modified</span></div>
-      </section>
-
       <section class="agent-prompt section shell" id="agent-prompt">
         <div class="section-heading horizontal"><div><p>DELEGATE THE MIGRATION</p><h2>Tell your agent.<br>Let it move.</h2></div><span>Replace three placeholders, then paste one sentence into a coding agent with shell access. The linked runbook carries the safeguards.</span></div>
         <div class="agent-prompt-card">
@@ -76,34 +69,29 @@
       </section>
 
       <section class="section shell" id="demo">
-        <div class="section-heading"><p>NATIVE CLI · NATIVE OUTPUT</p><h2>From one harness<br>to the next.</h2><span>Type in Claude, migrate, review the imported history, and continue inside Pi or Codex. Toggle the target; every stage plays at 1×.</span></div>
+        <div class="section-heading"><p>NATIVE CLI · NATIVE OUTPUT</p><h2>From one harness<br>to the next.</h2><span>Watch the actual Claude Code and target TUIs—not a simulated terminal. Claude review plays at 2×; Pi and Codex continue at 1×.</span></div>
         <div class="demo-target-toggle" role="group" aria-label="Choose demo target">
           <button type="button" class="is-active" aria-pressed="true" data-demo-target="pi">Claude → Pi</button>
           <button type="button" aria-pressed="false" data-demo-target="codex">Claude → Codex</button>
         </div>
-        <figure class="trajectory-frame" data-phase="claude" data-target="pi" data-trajectory>
+        <figure class="trajectory-frame" data-target="pi" data-trajectory>
           <div class="trajectory-topbar">
-            <div class="trajectory-label"><i></i> LIVE NATIVE HANDOFF · 1×</div>
-            <div class="trajectory-controls"><span data-trajectory-phase>claude</span><button type="button" data-trajectory-action="pause" aria-label="Pause trajectory animation">Pause</button><button type="button" data-trajectory-action="replay" aria-label="Replay trajectory animation">Replay</button></div>
+            <div class="trajectory-label"><i></i> REAL NATIVE TUIS · 1440P</div>
+            <div class="trajectory-controls"><span data-demo-speed>Claude 2× · Pi 1×</span><button type="button" data-trajectory-action="pause" aria-label="Pause native TUI recording">Pause</button><button type="button" data-trajectory-action="replay" aria-label="Replay native TUI recording">Replay</button></div>
           </div>
-          <div class="trajectory-route" aria-hidden="true">
-            <div class="trajectory-agent source-agent"><span>01 · BEFORE</span><strong>Claude Code</strong><em>native JSONL</em></div>
-            <div class="trajectory-rail"><i></i><span>portable events</span></div>
-            <div class="trajectory-agent target-agent"><span>02 · AFTER</span><strong data-demo-target-label>Pi</strong><em data-demo-target-native>native v3 JSONL</em></div>
-          </div>
-          <div class="trajectory-terminal">
-            <div class="trajectory-terminal-bar"><div class="window-dots"><i></i><i></i><i></i></div><span data-demo-stage-label>Claude Code</span><b data-trajectory-state>live · 1×</b></div>
-            <div class="trajectory-screen" aria-hidden="true" data-trajectory-lines></div>
+          <div class="trajectory-video-shell">
+            <video muted autoplay loop playsinline preload="metadata" poster="/assets/demo-before.png?v=5" aria-label="Real terminal recording of a Claude Code session migrated to Pi and continued there" data-demo-video>
+              <source src="/assets/demo-pi.mp4?v=5" type="video/mp4" data-demo-video-source>
+            </video>
           </div>
           <div class="trajectory-progress" aria-hidden="true"><i data-trajectory-progress></i></div>
-          <figcaption><span><i></i> real-time typing, history review, and continuation</span><em data-demo-duration>loops in 80 seconds</em></figcaption>
-          <p class="sr-only">Animated native-session handoff from Claude Code to Pi or Codex: the user types in Claude, session-migrate creates the target session, the imported history is reviewed, and the user continues inside the target client at real-time speed.</p>
+          <figcaption><span><i></i> actual Claude Code and <b data-demo-target-label>Pi</b> terminal sessions</span><em>Claude review 2× · target continuation 1×</em></figcaption>
         </figure>
         <details class="snapshots">
           <summary><span>Compare the native sessions</span><em>Actual TUI screenshots</em></summary>
           <div class="snapshot-grid">
-            <figure><img src="/assets/demo-before.png?v=4" alt="Claude Code native TUI before migration"><figcaption>Before · Claude Code TUI</figcaption></figure>
-            <figure><img src="/assets/demo-after-pi.png?v=4" alt="Pi native TUI after migration from Claude Code" data-demo-after-image><figcaption data-demo-after-caption>After · Pi TUI</figcaption></figure>
+            <figure><img src="/assets/demo-before.png?v=5" alt="Claude Code native TUI before migration"><figcaption>Before · Claude Code TUI</figcaption></figure>
+            <figure><img src="/assets/demo-after-pi.png?v=5" alt="Pi native TUI after migration from Claude Code" data-demo-after-image><figcaption data-demo-after-caption>After · Pi TUI</figcaption></figure>
           </div>
         </details>
       </section>

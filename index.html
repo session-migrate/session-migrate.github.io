@@ -50,16 +50,16 @@
           <div class="agent"><span class="agent-dot"></span> Vibe <span class="agent-arrow">→</span></div>
           <div class="agent"><span class="agent-dot"></span> Cursor*</div>
         </div>
-        <div class="terminal" aria-label="Example session migration">
-          <div class="terminal-bar"><div class="window-dots"><i></i><i></i><i></i></div><span>~/project</span><span class="terminal-state">migration complete</span></div>
+        <div class="terminal" data-hero-terminal aria-label="Migrate Fix event coalescing from Claude Code to Codex">
+          <div class="terminal-bar"><div class="window-dots"><i></i><i></i><i></i></div><span>~/project</span><div class="terminal-bar-actions"><span class="terminal-state">migration complete</span><button class="terminal-reset" type="button" aria-label="Replay the example migration" title="Replay" data-terminal-reset>↻</button></div></div>
           <div class="terminal-body">
-            <p class="terminal-command"><span>❯</span> smigrate transfer c3f7… --from claude --to codex</p>
+            <p class="terminal-command"><span>❯</span> <i>smigrate transfer --title "Fix event coalescing" --from claude --to codex</i></p>
             <div class="terminal-output">
-              <p><b>source</b><span>Claude Code · 42 messages · 7 tools</span></p>
+              <p><b>source</b><span>Claude Code · Fix event coalescing</span></p>
               <p><b>mapping</b><span class="progress"><i></i></span><em>100%</em></p>
-              <p><b>target</b><span>Codex · native rollout ready</span></p>
+              <p><b>target</b><span>Codex · native session ready</span></p>
             </div>
-            <p class="terminal-success"><span>✓</span> Resume with <strong>codex resume c3f7…</strong></p>
+            <p class="terminal-success"><span>✓</span> Continue <strong>Fix event coalescing</strong> in Codex</p>
           </div>
         </div>
       </section>
@@ -109,7 +109,7 @@
                     <p data-migration-write><b>target</b><span><b data-demo-target-label>Pi</b> native session written</span></p>
                     <p class="migration-done" data-migration-done><b>✓</b><span>history continued · ready to resume</span></p>
                   </div>
-                  <p class="migration-launch" data-migration-launch><span>$</span> <span data-migration-launch-command>pi --session 2000…0000</span></p>
+                  <p class="migration-launch" data-migration-launch><span>→</span> <span data-migration-launch-command>Continue “Fix event coalescing” in Pi</span></p>
                 </div>
               </div>
               <div class="native-window native-window-target">

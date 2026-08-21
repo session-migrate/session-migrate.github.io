@@ -50,13 +50,27 @@ if (agentPrompt) {
   });
 }
 
+const heroTerminal = document.querySelector("[data-hero-terminal]");
+if (heroTerminal) {
+  const bindReset = (terminal) => {
+    terminal.querySelector("[data-terminal-reset]").addEventListener("click", () => {
+      const replacement = terminal.cloneNode(true);
+      terminal.replaceWith(replacement);
+      bindReset(replacement);
+    });
+  };
+  bindReset(heroTerminal);
+}
+
 const trajectory = document.querySelector("[data-trajectory]");
 if (trajectory) {
   const DURATION = 50;
   const SOURCE_STOP = 11.25;
   const SOURCE_SPEED = 3.5;
+  const SOURCE_POSTER = 39.3;
   const TARGET_START = 25;
   const HIGHLIGHT_START = 27;
+  const SESSION_TITLE = "Fix event coalescing";
   const SHARED_HISTORY_START = 'So I read "backward compatible"';
   const SHARED_HISTORY_END = "two distinguishable cases.";
   const grid = trajectory.querySelector("[data-handoff-grid]");
@@ -92,19 +106,20 @@ if (trajectory) {
   let playing = true;
   let visible = true;
   let lastFrame = 0;
+  let sourceSettled = false;
   let historyAnchorScheduled = false;
 
   const details = {
     pi: {
       label: "Pi",
       cast: "/assets/demo-pi.cast",
-      launch: "pi --session 2000…0000",
+      launch: `Continue “${SESSION_TITLE}” in Pi`,
       compareAt: 20,
     },
     codex: {
       label: "Codex",
       cast: "/assets/demo-codex.cast",
-      launch: "codex resume 3000…0000",
+      launch: `Continue “${SESSION_TITLE}” in Codex`,
       compareAt: 26,
     },
   };
@@ -112,9 +127,9 @@ if (trajectory) {
   const phaseAt = (time) => {
     if (time < 8.5) return "source";
     if (time < 12) return "pullback";
-    if (time < 22.5) return "convert";
-    if (time < 25.5) return "launch";
-    if (time < 31) return "overlap";
+    if (time < 24.5) return "convert";
+    if (time < 27.5) return "launch";
+    if (time < 33) return "overlap";
     return "target";
   };
 
@@ -128,9 +143,20 @@ if (trajectory) {
     if (!windowElement || !marker) return false;
     const lines = Array.from(mount.querySelectorAll(".ap-line"));
     const startIndex = lines.findIndex((line) => line.textContent.includes(SHARED_HISTORY_START));
-    const endIndex = lines.findIndex(
-      (line, index) => index >= startIndex && line.textContent.includes(SHARED_HISTORY_END),
-    );
+    let endIndex = -1;
+    if (startIndex >= 0) {
+      for (let index = startIndex; index < lines.length; index += 1) {
+        const sharedText = lines
+          .slice(startIndex, index + 1)
+          .map((line) => line.textContent)
+          .join(" ")
+          .replace(/\s+/g, " ");
+        if (sharedText.includes(SHARED_HISTORY_END)) {
+          endIndex = index;
+          break;
+        }
+      }
+    }
     if (startIndex < 0 || endIndex < startIndex) {
       marker.dataset.anchored = "false";
       return false;
@@ -173,12 +199,25 @@ if (trajectory) {
       safe(() => sourcePlayer.pause());
       safe(() => targetPlayer.pause());
     } else if (elapsed < SOURCE_STOP) {
+      if (sourceSettled) {
+        sourceSettled = false;
+        mountSourcePlayer(false, elapsed);
+      }
       safe(() => targetPlayer.pause());
-      safe(() => sourcePlayer.play());
+      safe(() => sourcePlayer.pause());
+      safe(() => sourcePlayer.seek(elapsed * SOURCE_SPEED));
     } else if (elapsed < TARGET_START) {
+      if (!sourceSettled) {
+        sourceSettled = true;
+        mountSourcePlayer(true);
+      }
       safe(() => sourcePlayer.pause());
       safe(() => targetPlayer.pause());
     } else {
+      if (!sourceSettled) {
+        sourceSettled = true;
+        mountSourcePlayer(true);
+      }
       safe(() => sourcePlayer.pause());
       safe(() => targetPlayer.play());
     }
@@ -187,7 +226,7 @@ if (trajectory) {
   const update = () => {
     const detail = details[target];
     const phase = phaseAt(elapsed);
-    const command = `smigrate transfer 1000…0000 --from claude --to ${target}`;
+    const command = `smigrate transfer --title "${SESSION_TITLE}" --from claude --to ${target}`;
     const typing = Math.max(0, Math.min(1, (elapsed - 12.5) / 6));
     const showContextLimit = elapsed >= 7 && elapsed < 12.8;
     trajectory.dataset.phase = phase;
@@ -211,12 +250,44 @@ if (trajectory) {
   };
 
   const setTime = (time) => {
-    elapsed = Math.max(0, Math.min(DURATION, time));
-    safe(() => sourcePlayer.seek(Math.min(elapsed, SOURCE_STOP) * SOURCE_SPEED));
+    const next = Math.max(0, Math.min(DURATION, time));
+    const previous = elapsed;
+    elapsed = next;
+    if (elapsed <= SOURCE_STOP || previous < SOURCE_STOP) {
+      safe(() => sourcePlayer.seek(Math.min(elapsed, SOURCE_STOP) * SOURCE_SPEED));
+    }
     safe(() => targetPlayer.seek(Math.max(0, elapsed - TARGET_START)));
     update();
     syncPlayers();
   };
+
+  const playerOptions = {
+    autoPlay: false,
+    controls: false,
+    fit: "both",
+    idleTimeLimit: 2,
+    loop: false,
+    theme: "asciinema",
+    terminalFontFamily: "Geist Mono, monospace",
+    terminalLineHeight: 1.38,
+  };
+
+  function mountSourcePlayer(settled, time = 0) {
+    if (!window.AsciinemaPlayer) return;
+    safe(() => sourcePlayer && sourcePlayer.dispose());
+    sourceMount.replaceChildren();
+    sourcePlayer = window.AsciinemaPlayer.create(
+      "/assets/demo-claude.cast",
+      sourceMount,
+      {
+        ...playerOptions,
+        poster: settled ? `npt:${SOURCE_POSTER}` : undefined,
+        speed: settled ? 1 : SOURCE_SPEED,
+      },
+    );
+    if (!settled && time > 0) safe(() => sourcePlayer.seek(time * SOURCE_SPEED));
+    safe(() => sourcePlayer.pause());
+  }
 
   const mountPlayers = () => {
     if (!window.AsciinemaPlayer) {
@@ -228,18 +299,9 @@ if (trajectory) {
     grid.dataset.historyAligned = "false";
     sourceMount.replaceChildren();
     targetMount.replaceChildren();
-    const options = {
-      autoPlay: false,
-      controls: false,
-      fit: "both",
-      idleTimeLimit: 2,
-      loop: false,
-      theme: "asciinema",
-      terminalFontFamily: "Geist Mono, monospace",
-      terminalLineHeight: 1.38,
-    };
-    sourcePlayer = window.AsciinemaPlayer.create("/assets/demo-claude.cast", sourceMount, { ...options, speed: SOURCE_SPEED });
-    targetPlayer = window.AsciinemaPlayer.create(details[target].cast, targetMount, { ...options, speed: 1 });
+    mountSourcePlayer(false);
+    targetPlayer = window.AsciinemaPlayer.create(details[target].cast, targetMount, { ...playerOptions, speed: 1 });
+    sourceSettled = false;
     setTime(0);
   };
 

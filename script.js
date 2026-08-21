@@ -16,6 +16,9 @@ const trajectory = document.querySelector("[data-trajectory]");
 if (trajectory) {
   const DURATION = 43;
   const TARGET_START = 17.5;
+  const HIGHLIGHT_START = 20;
+  const SHARED_HISTORY_START = 'So I read "backward compatible"';
+  const SHARED_HISTORY_END = "two distinguishable cases.";
   const grid = trajectory.querySelector("[data-handoff-grid]");
   const viewport = trajectory.querySelector("[data-handoff-viewport]");
   const sourceMount = trajectory.querySelector("[data-source-cast]");
@@ -45,6 +48,7 @@ if (trajectory) {
   let playing = true;
   let visible = true;
   let lastFrame = 0;
+  let historyAnchorScheduled = false;
 
   const details = {
     pi: {
@@ -73,6 +77,51 @@ if (trajectory) {
   const safe = (fn) => {
     try { fn(); } catch (_) {}
   };
+
+  const anchorSharedHistory = (mount) => {
+    const windowElement = mount.closest(".native-window");
+    const marker = windowElement && windowElement.querySelector(".history-marker");
+    if (!windowElement || !marker) return false;
+    const lines = Array.from(mount.querySelectorAll(".ap-line"));
+    const startIndex = lines.findIndex((line) => line.textContent.includes(SHARED_HISTORY_START));
+    const endIndex = lines.findIndex(
+      (line, index) => index >= startIndex && line.textContent.includes(SHARED_HISTORY_END),
+    );
+    if (startIndex < 0 || endIndex < startIndex) {
+      marker.dataset.anchored = "false";
+      return false;
+    }
+    const windowRect = windowElement.getBoundingClientRect();
+    const startRect = lines[startIndex].getBoundingClientRect();
+    const endRect = lines[endIndex].getBoundingClientRect();
+    marker.style.top = `${Math.max(0, startRect.top - windowRect.top - 5)}px`;
+    marker.style.height = `${endRect.bottom - startRect.top + 10}px`;
+    marker.dataset.anchored = "true";
+    return true;
+  };
+
+  const scheduleHistoryAnchors = () => {
+    if (historyAnchorScheduled) return;
+    historyAnchorScheduled = true;
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        const sourceAnchored = anchorSharedHistory(sourceMount);
+        const targetAnchored = anchorSharedHistory(targetMount);
+        grid.dataset.historyAligned = String(
+          sourceAnchored && targetAnchored && elapsed >= HIGHLIGHT_START,
+        );
+        historyAnchorScheduled = false;
+      });
+    });
+  };
+
+  const historyObserver = new MutationObserver(scheduleHistoryAnchors);
+  historyObserver.observe(sourceMount, { childList: true, characterData: true, subtree: true });
+  historyObserver.observe(targetMount, { childList: true, characterData: true, subtree: true });
+  const historyResizeObserver = new ResizeObserver(scheduleHistoryAnchors);
+  historyResizeObserver.observe(sourceMount.closest(".native-window"));
+  historyResizeObserver.observe(targetMount.closest(".native-window"));
+  window.addEventListener("resize", scheduleHistoryAnchors);
 
   const syncPlayers = () => {
     if (!sourcePlayer || !targetPlayer) return;
@@ -103,6 +152,7 @@ if (trajectory) {
     launchNode.classList.toggle("is-visible", elapsed >= 15);
     migrationState.textContent = elapsed >= 15 ? "complete" : "working";
     stageLabel.textContent = phase === "source" ? "Start in Claude" : phase === "convert" ? "Migrate" : phase === "overlap" ? "Same history" : `Continue in ${detail.label}`;
+    if (phase === "overlap") scheduleHistoryAnchors();
   };
 
   const updatePlaybackState = () => {
@@ -125,12 +175,13 @@ if (trajectory) {
     }
     safe(() => sourcePlayer && sourcePlayer.dispose());
     safe(() => targetPlayer && targetPlayer.dispose());
+    grid.dataset.historyAligned = "false";
     sourceMount.replaceChildren();
     targetMount.replaceChildren();
     const options = {
       autoPlay: false,
       controls: false,
-      fit: "width",
+      fit: "both",
       idleTimeLimit: 2,
       loop: false,
       theme: "asciinema",

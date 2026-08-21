@@ -86,7 +86,7 @@
               <div class="native-window native-window-source">
                 <div class="native-window-bar"><span class="native-window-dots"><i></i><i></i><i></i></span><b>Claude Code</b><em>source session</em></div>
                 <div class="cast-mount" data-source-cast></div>
-                <div class="history-marker" aria-hidden="true"><span>shared history</span></div>
+                <div class="history-marker" data-anchored="false" aria-hidden="true"><span>shared history</span></div>
               </div>
               <div class="migration-window">
                 <div class="native-window-bar"><span class="native-window-dots"><i></i><i></i><i></i></span><b>session-migrate</b><em data-migration-state>working</em></div>
@@ -103,9 +103,9 @@
               <div class="native-window native-window-target">
                 <div class="native-window-bar"><span class="native-window-dots"><i></i><i></i><i></i></span><b data-target-window-label>Pi</b><em>resumed session</em></div>
                 <div class="cast-mount" data-target-cast></div>
-                <div class="history-marker" aria-hidden="true"><span>shared history</span></div>
+                <div class="history-marker" data-anchored="false" aria-hidden="true"><span>shared history</span></div>
               </div>
-              <div class="history-bridge" aria-hidden="true"><i></i><span>same conversation</span><i></i></div>
+              <div class="history-bridge" aria-hidden="true"><i></i><span>same history</span><i></i></div>
             </div>
           </div>
           <div class="trajectory-progress" aria-hidden="true"><i data-trajectory-progress></i></div>
@@ -130,33 +130,30 @@
 
       <section class="workflow section" id="how-it-works">
         <div class="shell workflow-grid">
-          <div class="section-heading compact"><p>HOW IT WORKS</p><h2>Native in.<br>Native out.</h2><span>No transcript-shaped text dumps. Every migration passes through a validated event timeline and a version-aware target writer.</span></div>
+          <div class="section-heading compact"><p>HOW IT WORKS</p><h2>Read. Convert.<br>Resume.</h2><span>session-migrate reads the source agent's session, converts the history both agents understand, and writes a native session the target agent can resume.</span></div>
           <div class="stream-card" aria-label="Animated migration pipeline">
-            <div class="stream-labels"><span>SOURCE</span><span>PORTABLE</span><span>TARGET</span></div>
-            <div class="stream-row" style="--delay:0s"><code>user.message</code><i></i><b>MESSAGE</b><i></i><code>response_item</code></div>
-            <div class="stream-row" style="--delay:.55s"><code>tool_use</code><i></i><b>TOOL_CALL</b><i></i><code>function_call</code></div>
-            <div class="stream-row" style="--delay:1.1s"><code>tool_result</code><i></i><b>TOOL_RESULT</b><i></i><code>function_output</code></div>
-            <div class="stream-row" style="--delay:1.65s"><code>compact_summary</code><i></i><b>COMPACTION</b><i></i><code>compacted</code></div>
-            <div class="stream-status"><span>●</span> schema checked · linkage valid · ready to resume</div>
+            <div class="pipeline-step"><b>01</b><div><span>Read the source</span><p>Open the agent's native session without changing it.</p></div></div>
+            <i class="pipeline-arrow" aria-hidden="true"></i>
+            <div class="pipeline-step"><b>02</b><div><span>Convert the history</span><p>Preserve supported messages, tools, images, and order.</p></div></div>
+            <i class="pipeline-arrow" aria-hidden="true"></i>
+            <div class="pipeline-step"><b>03</b><div><span>Write the target</span><p>Create a native session the next agent can resume.</p></div></div>
+            <div class="stream-status"><span>●</span> source unchanged · ready to resume</div>
           </div>
         </div>
       </section>
 
       <section class="section shell" id="compatibility">
-        <div class="section-heading horizontal"><div><p>COMPATIBILITY</p><h2>Pick the next agent.</h2></div><span>Every format can be read and written. Cursor support is experimental, version-pinned, and text-only.</span></div>
-        <div class="matrix-wrap"><table class="matrix">
-          <thead><tr><th>Source ↓ / Target →</th><th>Claude</th><th>Codex</th><th>Pi</th><th>OpenCode</th><th>Copilot</th><th>Antigravity</th><th>Cursor*</th></tr></thead>
-          <tbody>
-            <tr><td>Claude Code</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="text">T</td></tr>
-            <tr><td>Codex</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="text">T</td></tr>
-            <tr><td>Pi</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="text">T</td></tr>
-            <tr><td>OpenCode</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="text">T</td></tr>
-            <tr><td>Copilot</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="text">T</td></tr>
-            <tr><td>Antigravity</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="text">T</td></tr>
-            <tr><td>Cursor*</td><td class="text">T</td><td class="text">T</td><td class="text">T</td><td class="text">T</td><td class="text">T</td><td class="text">T</td><td class="text">T</td></tr>
-          </tbody>
-        </table></div>
-        <p class="matrix-note">✓ portable history · T experimental text-only · diagonal routes are portable rewrites, not byte copies</p>
+        <div class="section-heading horizontal"><div><p>COMPATIBILITY</p><h2>Pick the next agent.</h2></div><span>Move between any two listed agents. A same-agent move creates a fresh native session instead of copying bytes.</span></div>
+        <div class="capability-list" aria-label="Supported coding agents">
+          <article><i aria-hidden="true"></i><div><h3>Claude Code</h3><p>Full adapter</p></div></article>
+          <article><i aria-hidden="true"></i><div><h3>Codex</h3><p>Full adapter</p></div></article>
+          <article><i aria-hidden="true"></i><div><h3>Pi</h3><p>Full adapter</p></div></article>
+          <article><i aria-hidden="true"></i><div><h3>OpenCode</h3><p>Full adapter</p></div></article>
+          <article><i aria-hidden="true"></i><div><h3>Copilot</h3><p>Full adapter</p></div></article>
+          <article><i aria-hidden="true"></i><div><h3>Antigravity</h3><p>Full adapter</p></div></article>
+          <article class="experimental"><i aria-hidden="true"></i><div><h3>Cursor</h3><p>Text only · experimental</p></div></article>
+        </div>
+        <p class="capability-note">All 49 source → target routes are available. Cursor is version-pinned and experimental.</p>
       </section>
 
       <section class="feature-grid shell">

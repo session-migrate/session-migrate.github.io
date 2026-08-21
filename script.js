@@ -12,6 +12,40 @@ for (const button of document.querySelectorAll("[data-copy]")) {
   });
 }
 
+const agentPrompt = document.querySelector("[data-agent-prompt]");
+if (agentPrompt) {
+  const source = agentPrompt.querySelector("[data-agent-prompt-source]");
+  const target = agentPrompt.querySelector("[data-agent-prompt-target]");
+  const output = agentPrompt.querySelector("[data-agent-prompt-output]");
+  const copyButton = agentPrompt.querySelector("[data-agent-prompt-copy]");
+  const labels = {
+    claude: "Claude Code",
+    codex: "Codex",
+    pi: "Pi",
+    opencode: "OpenCode",
+    copilot: "Copilot",
+    antigravity: "Antigravity",
+    cursor: "Cursor",
+  };
+
+  const updatePrompt = () => {
+    output.textContent = `Follow https://session-migrate.github.io/llms.txt to migrate a session from ${labels[source.value]} to ${labels[target.value]}. Session: [UUID OR TITLE]`;
+  };
+
+  source.addEventListener("change", updatePrompt);
+  target.addEventListener("change", updatePrompt);
+  copyButton.addEventListener("click", async () => {
+    const originalLabel = copyButton.textContent;
+    try {
+      await navigator.clipboard.writeText(output.textContent);
+      copyButton.textContent = "Copied";
+      window.setTimeout(() => { copyButton.textContent = originalLabel; }, 1600);
+    } catch {
+      copyButton.textContent = "Select text";
+    }
+  });
+}
+
 const trajectory = document.querySelector("[data-trajectory]");
 if (trajectory) {
   const DURATION = 43;

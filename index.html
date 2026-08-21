@@ -64,10 +64,18 @@
       </section>
 
       <section class="agent-prompt section shell" id="agent-prompt">
-        <div class="section-heading horizontal"><div><p>DELEGATE THE MIGRATION</p><h2>Tell your agent.<br>Let it move.</h2></div><span>Replace three placeholders, then paste one sentence into a coding agent with shell access. The linked runbook carries the safeguards.</span></div>
-        <div class="agent-prompt-card">
-          <div class="agent-prompt-bar"><span>INSTRUCTION.txt</span><button type="button" aria-label="Copy coding-agent instruction" data-copy="Follow https://session-migrate.github.io/llms.txt to migrate session [UUID OR TITLE] from [SOURCE] to [TARGET] now."><b>Copy instruction</b></button></div>
-          <pre><code>Follow https://session-migrate.github.io/llms.txt to migrate session [UUID OR TITLE] from [SOURCE] to [TARGET] now.</code></pre>
+        <div class="section-heading horizontal"><div><p>DELEGATE THE MIGRATION</p><h2>Tell your agent.<br>Let it move.</h2></div><span>Pick a source and target, copy the sentence, then replace its final placeholder with the session UUID or title.</span></div>
+        <div class="agent-prompt-card" data-agent-prompt>
+          <div class="agent-prompt-bar"><span>INSTRUCTION.txt</span><em>Choose a route, then copy</em></div>
+          <pre aria-live="polite"><code data-agent-prompt-output>Follow https://session-migrate.github.io/llms.txt to migrate a session from Claude Code to Codex. Session: [UUID OR TITLE]</code></pre>
+          <div class="agent-prompt-controls">
+            <div class="agent-route" aria-label="Migration route">
+              <label><span>Source</span><select data-agent-prompt-source aria-label="Source harness"><option value="claude" selected>Claude Code</option><option value="codex">Codex</option><option value="pi">Pi</option><option value="opencode">OpenCode</option><option value="copilot">Copilot</option><option value="antigravity">Antigravity</option><option value="cursor">Cursor</option></select></label>
+              <i aria-hidden="true">→</i>
+              <label><span>Target</span><select data-agent-prompt-target aria-label="Target harness"><option value="claude">Claude Code</option><option value="codex" selected>Codex</option><option value="pi">Pi</option><option value="opencode">OpenCode</option><option value="copilot">Copilot</option><option value="antigravity">Antigravity</option><option value="cursor">Cursor</option></select></label>
+            </div>
+            <button type="button" class="agent-prompt-copy" aria-label="Copy coding-agent instruction" data-agent-prompt-copy>Copy instruction</button>
+          </div>
         </div>
         <p class="agent-prompt-note">The agent reads the full procedure from llms.txt, then dry-runs, preserves the source, and returns the native resume command.<a href="https://github.com/xhluca/session-migrate/blob/main/docs/coding-agent-instruction.md">Read the verification notes ↗</a></p>
       </section>

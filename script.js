@@ -70,7 +70,7 @@ if (trajectory) {
   const SOURCE_POSTER = 39.3;
   const TARGET_START = 25;
   const HIGHLIGHT_START = 27;
-  const SESSION_TITLE = "Fix event coalescing";
+  const SESSION_TITLE = "fix-timeline-merging";
   const SHARED_HISTORY_START = 'So I read "backward compatible"';
   const SHARED_HISTORY_END = "two distinguishable cases.";
   const grid = trajectory.querySelector("[data-handoff-grid]");
@@ -226,7 +226,7 @@ if (trajectory) {
   const update = () => {
     const detail = details[target];
     const phase = phaseAt(elapsed);
-    const command = `smigrate transfer --title "${SESSION_TITLE}" --from claude --to ${target}`;
+    const command = `smigrate transfer --title ${SESSION_TITLE} --from claude --to ${target}`;
     const typing = Math.max(0, Math.min(1, (elapsed - 12.5) / 6));
     const showContextLimit = elapsed >= 7 && elapsed < 12.8;
     trajectory.dataset.phase = phase;

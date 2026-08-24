@@ -79,7 +79,6 @@ if (trajectory) {
   const targetMount = trajectory.querySelector("[data-target-cast]");
   const progress = trajectory.querySelector("[data-trajectory-progress]");
   const contextLimit = trajectory.querySelector("[data-context-limit]");
-  const contextTarget = trajectory.querySelector("[data-context-target]");
   const rewindButton = trajectory.querySelector('[data-trajectory-action="rewind"]');
   const pauseButton = trajectory.querySelector('[data-trajectory-action="pause"]');
   const forwardButton = trajectory.querySelector('[data-trajectory-action="forward"]');
@@ -240,7 +239,7 @@ if (trajectory) {
     doneNode.classList.toggle("is-visible", elapsed >= 21.5);
     launchNode.classList.toggle("is-visible", elapsed >= 21.5);
     migrationState.textContent = elapsed >= 21.5 ? "complete" : "working";
-    stageLabel.textContent = showContextLimit ? "Claude context is full" : phase === "source" ? "Work in Claude" : phase === "pullback" ? "Hand off the session" : phase === "convert" ? "Migrate the session" : phase === "launch" ? "Resume native session" : phase === "overlap" ? "Same history" : `Continue in ${detail.label}`;
+    stageLabel.textContent = showContextLimit ? "Claude session limit reached" : phase === "source" ? "Work in Claude" : phase === "pullback" ? "Hand off the session" : phase === "convert" ? "Migrate the session" : phase === "launch" ? "Resume native session" : phase === "overlap" ? "Same history" : `Continue in ${detail.label}`;
     if (phase === "overlap") scheduleHistoryAnchors();
   };
 
@@ -360,7 +359,6 @@ if (trajectory) {
     viewport.setAttribute("aria-label", `Claude Code session migrated to ${detail.label} and continued there`);
     for (const node of trajectory.querySelectorAll("[data-demo-target-label], [data-target-window-label], [data-demo-target-caption]")) node.textContent = detail.label;
     launchCommandNode.textContent = detail.launch;
-    contextTarget.textContent = detail.label;
     compareTargetLabel.textContent = detail.label;
     compareTargetMount.setAttribute("aria-label", `${detail.label} native terminal recording`);
     afterCaption.textContent = `After · ${detail.label} TUI`;

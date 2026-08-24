@@ -6,8 +6,10 @@ set -eu
 package_name="muse-spark-openrouter-patch"
 package_version="0.1.0"
 wheel_name="muse_spark_openrouter_patch-${package_version}-py3-none-any.whl"
-wheel_sha256="b83443a65a75fa40864028c1865fceab1a669d71d86ac94160b7b8c0aa114141"
+wheel_sha256="5d4f3701da9e9fe8c0350a9bc56e3b1b2e7cebe43902069d45874839d7e07f8b"
 release_base_url="${MUSE_SPARK_INSTALL_BASE_URL:-https://session-migrate.github.io/muse-spark-openrouter/releases/${package_version}}"
+pypi_index_url="${MUSE_SPARK_PYPI_INDEX_URL:-https://pypi.org/simple}"
+package_spec="${package_name}==${package_version}"
 
 die() {
   printf 'error: %s\n' "$*" >&2
@@ -101,6 +103,7 @@ esac
 
 temporary_dir=""
 temporary_wheel=""
+wheel_path=""
 cleanup() {
   if [ -n "$temporary_wheel" ] && [ -f "$temporary_wheel" ]; then
     rm -f -- "$temporary_wheel"
@@ -112,13 +115,29 @@ cleanup() {
 trap cleanup EXIT
 trap 'cleanup; exit 1' HUP INT TERM
 
-if [ -n "$script_dir" ] && [ -f "$script_dir/dist/$wheel_name" ]; then
-  wheel_path="$script_dir/dist/$wheel_name"
-else
+verify_wheel() {
+  checked_wheel=$1
+  if command -v sha256sum >/dev/null 2>&1; then
+    actual_sha256=$(sha256sum "$checked_wheel" | awk '{print $1}')
+  elif command -v shasum >/dev/null 2>&1; then
+    actual_sha256=$(shasum -a 256 "$checked_wheel" | awk '{print $1}')
+  elif command -v openssl >/dev/null 2>&1; then
+    actual_sha256=$(openssl dgst -sha256 "$checked_wheel" | awk '{print $NF}')
+  else
+    die "sha256sum, shasum, or openssl is required to verify the release"
+  fi
+  [ "$actual_sha256" = "$wheel_sha256" ] || die "release checksum mismatch"
+  printf 'Verified fallback release checksum.\n'
+}
+
+prepare_fallback_wheel() {
+  if [ -n "$wheel_path" ]; then
+    return
+  fi
   temporary_dir=$(mktemp -d "${TMPDIR:-/tmp}/muse-spark-openrouter.XXXXXXXX")
   temporary_wheel="$temporary_dir/$wheel_name"
   wheel_url="$release_base_url/$wheel_name"
-  printf 'Downloading %s %s...\n' "$package_name" "$package_version"
+  printf 'Downloading checksum-pinned fallback for %s %s...\n' "$package_name" "$package_version"
   if command -v curl >/dev/null 2>&1; then
     curl -LsSf --retry 3 --output "$temporary_wheel" "$wheel_url"
   elif command -v wget >/dev/null 2>&1; then
@@ -127,25 +146,25 @@ else
     die "curl or wget is required to download the release"
   fi
   wheel_path="$temporary_wheel"
-fi
+  verify_wheel "$wheel_path"
+}
 
-if command -v sha256sum >/dev/null 2>&1; then
-  actual_sha256=$(sha256sum "$wheel_path" | awk '{print $1}')
-elif command -v shasum >/dev/null 2>&1; then
-  actual_sha256=$(shasum -a 256 "$wheel_path" | awk '{print $1}')
-elif command -v openssl >/dev/null 2>&1; then
-  actual_sha256=$(openssl dgst -sha256 "$wheel_path" | awk '{print $NF}')
-else
-  die "sha256sum, shasum, or openssl is required to verify the release"
+if [ -n "$script_dir" ] && [ -f "$script_dir/dist/$wheel_name" ]; then
+  wheel_path="$script_dir/dist/$wheel_name"
+  verify_wheel "$wheel_path"
 fi
-[ "$actual_sha256" = "$wheel_sha256" ] || die "release checksum mismatch"
-printf 'Verified release checksum.\n'
 
 printf 'Installing %s %s for user %s...\n' "$package_name" "$package_version" "$(id -un)"
 installed_command=""
 
 if command -v uv >/dev/null 2>&1; then
-  uv tool install --force "$wheel_path"
+  if [ -n "$wheel_path" ]; then
+    uv tool install --force "$wheel_path"
+  elif ! uv tool install --force --default-index "$pypi_index_url" "$package_spec"; then
+    printf 'PyPI installation failed; using the verified release fallback.\n' >&2
+    prepare_fallback_wheel
+    uv tool install --force "$wheel_path"
+  fi
   uv_bin_dir="${UV_TOOL_BIN_DIR:-$HOME/.local/bin}"
   if [ -x "$uv_bin_dir/muse-spark-openrouter" ]; then
     installed_command="$uv_bin_dir/muse-spark-openrouter"
@@ -170,8 +189,17 @@ else
   done
 
   "$python" -m venv "$install_dir"
-  "$install_dir/bin/python" -m pip install \
-    --disable-pip-version-check --force-reinstall "$wheel_path"
+  if [ -n "$wheel_path" ]; then
+    "$install_dir/bin/python" -m pip install \
+      --disable-pip-version-check --force-reinstall "$wheel_path"
+  elif ! "$install_dir/bin/python" -m pip install \
+    --disable-pip-version-check --index-url "$pypi_index_url" \
+    --force-reinstall "$package_spec"; then
+    printf 'PyPI installation failed; using the verified release fallback.\n' >&2
+    prepare_fallback_wheel
+    "$install_dir/bin/python" -m pip install \
+      --disable-pip-version-check --force-reinstall "$wheel_path"
+  fi
   ln -sfn -- "$install_dir/bin/muse-spark-openrouter" "$bin_dir/muse-spark-openrouter"
   ln -sfn -- "$install_dir/bin/codex-muse" "$bin_dir/codex-muse"
   installed_command="$bin_dir/muse-spark-openrouter"

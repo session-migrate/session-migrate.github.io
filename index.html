@@ -4,23 +4,23 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>session-migrate — Migrate your sessions to any harness</title>
-    <meta name="description" content="Move coding agent sessions among Claude Code, Codex, Pi, Oh My Pi, OpenCode, Copilot, Antigravity, Mistral Vibe, Muse, Qwen, Kimi, and Cursor.">
+    <meta name="description" content="Move coding agent sessions among Claude Code, Codex, Pi, Oh My Pi, OpenCode, Copilot, Antigravity, Mistral Vibe, Muse, Qwen, Kimi, Grok, Kilo Code, OpenHands, and Cursor.">
     <link rel="canonical" href="https://session-migrate.github.io/">
     <link rel="icon" href="/logo-mark.svg" type="image/svg+xml">
     <meta name="theme-color" content="#08090b">
     <meta property="og:type" content="website">
     <meta property="og:title" content="session-migrate — Migrate your sessions to any harness">
-    <meta property="og:description" content="Move coding agent sessions among Claude Code, Codex, Pi, Oh My Pi, OpenCode, Copilot, Antigravity, Mistral Vibe, Muse, Qwen, Kimi, and Cursor.">
+    <meta property="og:description" content="Move coding agent sessions among Claude Code, Codex, Pi, Oh My Pi, OpenCode, Copilot, Antigravity, Mistral Vibe, Muse, Qwen, Kimi, Grok, Kilo Code, OpenHands, and Cursor.">
     <meta property="og:url" content="https://session-migrate.github.io/">
-    <meta property="og:image" content="https://session-migrate.github.io/og-twelve-harnesses.png">
+    <meta property="og:image" content="https://session-migrate.github.io/og-fifteen-harnesses.png">
     <meta property="og:image:width" content="1731">
     <meta property="og:image:height" content="909">
-    <meta property="og:image:alt" content="Migrate sessions among Claude Code, Codex, Pi, Oh My Pi, OpenCode, Copilot, Antigravity, Mistral Vibe, Muse, Qwen, Kimi, and Cursor">
+    <meta property="og:image:alt" content="Migrate sessions among fifteen coding agents, from Claude Code and Codex to Grok, Kilo Code, OpenHands, and Cursor">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="session-migrate — Migrate your sessions to any harness">
-    <meta name="twitter:description" content="Move coding agent sessions among Claude Code, Codex, Pi, Oh My Pi, OpenCode, Copilot, Antigravity, Mistral Vibe, Muse, Qwen, Kimi, and Cursor.">
-    <meta name="twitter:image" content="https://session-migrate.github.io/og-twelve-harnesses.png">
-    <meta name="twitter:image:alt" content="Migrate sessions among Claude Code, Codex, Pi, Oh My Pi, OpenCode, Copilot, Antigravity, Mistral Vibe, Muse, Qwen, Kimi, and Cursor">
+    <meta name="twitter:description" content="Move coding agent sessions among Claude Code, Codex, Pi, Oh My Pi, OpenCode, Copilot, Antigravity, Mistral Vibe, Muse, Qwen, Kimi, Grok, Kilo Code, OpenHands, and Cursor.">
+    <meta name="twitter:image" content="https://session-migrate.github.io/og-fifteen-harnesses.png">
+    <meta name="twitter:image:alt" content="Migrate sessions among fifteen coding agents, from Claude Code and Codex to Grok, Kilo Code, OpenHands, and Cursor">
     <link rel="stylesheet" href="/asciinema-player.css">
     <link rel="stylesheet" href="/styles.css">
   </head>
@@ -35,7 +35,7 @@
         <img class="hero-logo" src="/logo-mark.svg" alt="" aria-hidden="true">
         <div class="eyebrow"><span></span> Local sessions, set free</div>
         <h1>Switch agents.<br>Keep your context.</h1>
-        <p class="hero-copy">Move coding agent sessions among Claude Code, Codex, Pi, Oh My Pi, OpenCode, Copilot, Antigravity, Mistral Vibe, Muse, Qwen, Kimi, and Cursor—then resume where you left off.</p>
+        <p class="hero-copy">Move coding agent sessions among Claude Code, Codex, Pi, Oh My Pi, OpenCode, Copilot, Antigravity, Mistral Vibe, Muse, Qwen, Kimi, Grok, Kilo Code, OpenHands, and Cursor—then resume where you left off.</p>
         <div class="hero-actions">
           <button class="copy-command" type="button" data-copy="curl -LsSf https://session-migrate.github.io/install.sh | sh"><code><span>$</span> curl -LsSf session-migrate.github.io/install.sh | sh</code><b>Copy</b></button>
           <a class="primary-link" href="https://github.com/xhluca/session-migrate">View on GitHub <span>↗</span></a>
@@ -44,6 +44,7 @@
           <div class="agent"><span class="agent-dot"></span> Claude <span class="agent-arrow">→</span></div>
           <div class="agent"><span class="agent-dot"></span> Codex <span class="agent-arrow">→</span></div>
           <div class="agent"><span class="agent-dot"></span> Pi <span class="agent-arrow">→</span></div>
+          <div class="agent"><span class="agent-dot"></span> Oh My Pi <span class="agent-arrow">→</span></div>
           <div class="agent"><span class="agent-dot"></span> OpenCode <span class="agent-arrow">→</span></div>
           <div class="agent"><span class="agent-dot"></span> Copilot <span class="agent-arrow">→</span></div>
           <div class="agent"><span class="agent-dot"></span> Antigravity <span class="agent-arrow">→</span></div>
@@ -51,6 +52,9 @@
           <div class="agent"><span class="agent-dot"></span> Muse <span class="agent-arrow">→</span></div>
           <div class="agent"><span class="agent-dot"></span> Qwen <span class="agent-arrow">→</span></div>
           <div class="agent"><span class="agent-dot"></span> Kimi <span class="agent-arrow">→</span></div>
+          <div class="agent"><span class="agent-dot"></span> Grok <span class="agent-arrow">→</span></div>
+          <div class="agent"><span class="agent-dot"></span> Kilo <span class="agent-arrow">→</span></div>
+          <div class="agent"><span class="agent-dot"></span> OpenHands <span class="agent-arrow">→</span></div>
           <div class="agent"><span class="agent-dot"></span> Cursor*</div>
         </div>
         <div class="terminal" data-hero-terminal aria-label="Migrate fix-timeline-merging from Claude Code to Codex">
@@ -74,9 +78,9 @@
           <pre aria-live="polite"><code data-agent-prompt-output>Follow <span class="prompt-url">https://session-migrate.github.io/llms.txt</span> to migrate a session from <span class="prompt-source" data-agent-prompt-source-label>Claude Code</span> to <span class="prompt-target" data-agent-prompt-target-label>Codex</span>. Session: <span class="prompt-session">[UUID OR TITLE]</span></code></pre>
           <div class="agent-prompt-controls">
             <div class="agent-route" aria-label="Migration route">
-              <label><span>Source</span><select class="source-select" data-agent-prompt-source aria-label="Source harness"><option value="claude" selected>Claude Code</option><option value="codex">Codex</option><option value="pi">Pi</option><option value="omp">Oh My Pi</option><option value="opencode">OpenCode</option><option value="copilot">Copilot</option><option value="antigravity">Antigravity</option><option value="vibe">Mistral Vibe</option><option value="muse">Muse Code</option><option value="qwen">Qwen Code</option><option value="kimi">Kimi Code</option><option value="cursor">Cursor</option></select></label>
+              <label><span>Source</span><select class="source-select" data-agent-prompt-source aria-label="Source harness"><option value="claude" selected>Claude Code</option><option value="codex">Codex</option><option value="pi">Pi</option><option value="omp">Oh My Pi</option><option value="opencode">OpenCode</option><option value="copilot">Copilot</option><option value="antigravity">Antigravity</option><option value="vibe">Mistral Vibe</option><option value="muse">Muse Code</option><option value="qwen">Qwen Code</option><option value="kimi">Kimi Code</option><option value="grok">Grok</option><option value="kilo">Kilo Code</option><option value="openhands">OpenHands</option><option value="cursor">Cursor</option></select></label>
               <i aria-hidden="true">→</i>
-              <label><span>Target</span><select class="target-select" data-agent-prompt-target aria-label="Target harness"><option value="claude">Claude Code</option><option value="codex" selected>Codex</option><option value="pi">Pi</option><option value="omp">Oh My Pi</option><option value="opencode">OpenCode</option><option value="copilot">Copilot</option><option value="antigravity">Antigravity</option><option value="vibe">Mistral Vibe</option><option value="muse">Muse Code</option><option value="qwen">Qwen Code</option><option value="kimi">Kimi Code</option><option value="cursor">Cursor</option></select></label>
+              <label><span>Target</span><select class="target-select" data-agent-prompt-target aria-label="Target harness"><option value="claude">Claude Code</option><option value="codex" selected>Codex</option><option value="pi">Pi</option><option value="omp">Oh My Pi</option><option value="opencode">OpenCode</option><option value="copilot">Copilot</option><option value="antigravity">Antigravity</option><option value="vibe">Mistral Vibe</option><option value="muse">Muse Code</option><option value="qwen">Qwen Code</option><option value="kimi">Kimi Code</option><option value="grok">Grok</option><option value="kilo">Kilo Code</option><option value="openhands">OpenHands</option><option value="cursor">Cursor</option></select></label>
             </div>
             <button type="button" class="agent-prompt-copy" aria-label="Copy coding-agent instruction" data-agent-prompt-copy>Copy instruction</button>
           </div>
@@ -146,20 +150,23 @@
       <section class="section shell" id="compatibility">
         <div class="section-heading horizontal"><div><p>COMPATIBILITY</p><h2>Pick the next agent.</h2></div><span>Move between any two listed agents. A same-agent move creates a fresh native session instead of copying bytes.</span></div>
         <div class="capability-list" aria-label="Supported coding agents">
-          <article><i aria-hidden="true"></i><div><h3>Claude Code</h3><p>Full adapter</p></div></article>
-          <article><i aria-hidden="true"></i><div><h3>Codex</h3><p>Full adapter</p></div></article>
-          <article><i aria-hidden="true"></i><div><h3>Pi</h3><p>Full adapter</p></div></article>
-          <article><i aria-hidden="true"></i><div><h3>Oh My Pi</h3><p>Full adapter · 18.0.5</p></div></article>
-          <article><i aria-hidden="true"></i><div><h3>OpenCode</h3><p>Full adapter</p></div></article>
-          <article><i aria-hidden="true"></i><div><h3>Copilot</h3><p>Full adapter</p></div></article>
-          <article><i aria-hidden="true"></i><div><h3>Antigravity</h3><p>Full adapter</p></div></article>
-          <article class="vibe"><i aria-hidden="true"></i><div><h3>Mistral Vibe</h3><p>Full adapter · 2.24.3</p></div></article>
-          <article><i aria-hidden="true"></i><div><h3>Muse Code</h3><p>Full adapter · 0.2.1</p></div></article>
-          <article><i aria-hidden="true"></i><div><h3>Qwen Code</h3><p>Full adapter · 0.22.1</p></div></article>
-          <article><i aria-hidden="true"></i><div><h3>Kimi Code</h3><p>Full adapter · 0.38.0</p></div></article>
-          <article class="experimental"><i aria-hidden="true"></i><div><h3>Cursor</h3><p>Text only · experimental</p></div></article>
+          <a href="https://github.com/anthropics/claude-code"><img src="/agents/claude-code.svg" alt=""><div><h3>Claude Code</h3><p>Full adapter</p></div></a>
+          <a href="https://github.com/openai/codex"><img src="/agents/codex.svg" alt=""><div><h3>Codex</h3><p>Full adapter</p></div></a>
+          <a href="https://pi.dev"><img src="/agents/pi.svg" alt=""><div><h3>Pi</h3><p>Full adapter</p></div></a>
+          <a href="https://github.com/can1357/oh-my-pi"><img src="/agents/oh-my-pi.svg" alt=""><div><h3>Oh My Pi</h3><p>Full adapter · 18.0.5</p></div></a>
+          <a href="https://github.com/anomalyco/opencode"><img src="/agents/opencode.svg" alt=""><div><h3>OpenCode</h3><p>Full adapter</p></div></a>
+          <a href="https://github.com/github/copilot-cli"><img src="/agents/copilot.svg" alt=""><div><h3>Copilot</h3><p>Full adapter</p></div></a>
+          <a href="https://developers.google.com/antigravity"><img src="/agents/antigravity.svg" alt=""><div><h3>Antigravity</h3><p>Full adapter</p></div></a>
+          <a class="vibe" href="https://github.com/mistralai/mistral-vibe"><img src="/agents/mistral-vibe.svg" alt=""><div><h3>Mistral Vibe</h3><p>Full adapter · 2.24.3</p></div></a>
+          <a href="https://dev.meta.ai/"><img src="/agents/muse.svg" alt=""><div><h3>Muse Code</h3><p>Full adapter · 0.2.1</p></div></a>
+          <a href="https://github.com/QwenLM/qwen-code"><img src="/agents/qwen-code.svg" alt=""><div><h3>Qwen Code</h3><p>Full adapter · 0.22.1</p></div></a>
+          <a href="https://github.com/MoonshotAI/kimi-cli"><img src="/agents/kimi-code.svg" alt=""><div><h3>Kimi Code</h3><p>Full adapter · 0.38.0</p></div></a>
+          <a href="https://github.com/xai-org/grok-build"><img src="/agents/grok.svg" alt=""><div><h3>Grok</h3><p>Full adapter · 1.0.5</p></div></a>
+          <a href="https://github.com/Kilo-Org/kilocode"><img src="/agents/kilo-code.svg" alt=""><div><h3>Kilo Code</h3><p>Full adapter · 7.5.0</p></div></a>
+          <a href="https://github.com/All-Hands-AI/OpenHands"><img src="/agents/openhands.svg" alt=""><div><h3>OpenHands</h3><p>Full adapter · 1.16.0</p></div></a>
+          <a class="experimental" href="https://cursor.com/cli"><img src="/agents/cursor.svg" alt=""><div><h3>Cursor</h3><p>Text only · experimental</p></div></a>
         </div>
-        <p class="capability-note">All 144 source → target routes are available. Cursor is version-pinned and experimental.</p>
+        <p class="capability-note">All 225 source → target routes are available. Cursor is version-pinned and experimental.</p>
       </section>
 
       <section class="install section shell" id="install">

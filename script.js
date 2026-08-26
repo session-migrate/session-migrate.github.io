@@ -74,9 +74,9 @@ if (trajectory) {
   const DURATION = 53;
   const SOURCE_STOP = 8.55;
   const SOURCE_SPEED = 4.6;
-  const SOURCE_POSTER = 37.8;
+  const SOURCE_POSTER = 0.1;
   const LIMIT_START = 8.7;
-  const LIMIT_END = 12.1;
+  const LIMIT_END = 36;
   const TARGET_START = 28;
   const HIGHLIGHT_START = 30;
   const SESSION_TITLE = "fix-timeline-merging";
@@ -284,31 +284,22 @@ if (trajectory) {
 
   const syncPlayers = () => {
     if (!sourcePlayer || !targetPlayer) return;
-    if (!playing || !visible) {
-      safe(() => sourcePlayer.pause());
-      safe(() => targetPlayer.pause());
-    } else if (elapsed < SOURCE_STOP) {
+    if (elapsed < SOURCE_STOP) {
       if (sourceSettled) {
         sourceSettled = false;
-        mountSourcePlayer(false, elapsed);
+        mountSourcePlayer(false);
       }
       safe(() => targetPlayer.pause());
       safe(() => sourcePlayer.pause());
       safe(() => sourcePlayer.seek(elapsed * SOURCE_SPEED));
-    } else if (elapsed < TARGET_START) {
-      if (!sourceSettled) {
-        sourceSettled = true;
-        mountSourcePlayer(true);
-      }
-      safe(() => sourcePlayer.pause());
-      safe(() => targetPlayer.pause());
     } else {
       if (!sourceSettled) {
         sourceSettled = true;
         mountSourcePlayer(true);
       }
       safe(() => sourcePlayer.pause());
-      safe(() => targetPlayer.play());
+      if (elapsed >= TARGET_START && playing && visible) safe(() => targetPlayer.play());
+      else safe(() => targetPlayer.pause());
     }
   };
 
@@ -339,14 +330,10 @@ if (trajectory) {
 
   const setTime = (time) => {
     const next = Math.max(0, Math.min(DURATION, time));
-    const previous = elapsed;
     elapsed = next;
-    if (elapsed <= SOURCE_STOP || previous < SOURCE_STOP) {
-      safe(() => sourcePlayer.seek(Math.min(elapsed, SOURCE_STOP) * SOURCE_SPEED));
-    }
     safe(() => targetPlayer.seek(Math.max(0, elapsed - TARGET_START)));
-    update();
     syncPlayers();
+    update();
   };
 
   const playerOptions = {
@@ -360,12 +347,12 @@ if (trajectory) {
     terminalLineHeight: 1.14,
   };
 
-  function mountSourcePlayer(settled, time = 0) {
+  function mountSourcePlayer(settled) {
     if (!window.AsciinemaPlayer) return;
     safe(() => sourcePlayer && sourcePlayer.dispose());
     sourceMount.replaceChildren();
     sourcePlayer = window.AsciinemaPlayer.create(
-      "/assets/demo-claude.cast",
+      settled ? "/assets/demo-claude-hold.cast" : "/assets/demo-claude.cast",
       sourceMount,
       {
         ...playerOptions,
@@ -373,7 +360,6 @@ if (trajectory) {
         speed: settled ? 1 : SOURCE_SPEED,
       },
     );
-    if (!settled && time > 0) safe(() => sourcePlayer.seek(time * SOURCE_SPEED));
     safe(() => sourcePlayer.pause());
     scheduleClaudePresentation();
   }

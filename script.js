@@ -71,12 +71,14 @@ if (heroTerminal) {
 
 const trajectory = document.querySelector("[data-trajectory]");
 if (trajectory) {
-  const DURATION = 50;
-  const SOURCE_STOP = 11.25;
-  const SOURCE_SPEED = 3.5;
-  const SOURCE_POSTER = 39.3;
-  const TARGET_START = 25;
-  const HIGHLIGHT_START = 27;
+  const DURATION = 53;
+  const SOURCE_STOP = 8.55;
+  const SOURCE_SPEED = 4.6;
+  const SOURCE_POSTER = 37.8;
+  const LIMIT_START = 8.7;
+  const LIMIT_END = 12.1;
+  const TARGET_START = 28;
+  const HIGHLIGHT_START = 30;
   const SESSION_TITLE = "fix-timeline-merging";
   const SHARED_HISTORY_START = 'So I read "backward compatible"';
   const SHARED_HISTORY_END = "two distinguishable cases.";
@@ -85,7 +87,6 @@ if (trajectory) {
   const sourceMount = trajectory.querySelector("[data-source-cast]");
   const targetMount = trajectory.querySelector("[data-target-cast]");
   const progress = trajectory.querySelector("[data-trajectory-progress]");
-  const contextLimit = trajectory.querySelector("[data-context-limit]");
   const rewindButton = trajectory.querySelector('[data-trajectory-action="rewind"]');
   const pauseButton = trajectory.querySelector('[data-trajectory-action="pause"]');
   const forwardButton = trajectory.querySelector('[data-trajectory-action="forward"]');
@@ -114,6 +115,7 @@ if (trajectory) {
   let lastFrame = 0;
   let sourceSettled = false;
   let historyAnchorScheduled = false;
+  let claudePresentationScheduled = false;
 
   const details = {
     pi: {
@@ -131,17 +133,98 @@ if (trajectory) {
   };
 
   const phaseAt = (time) => {
-    if (time < 8.5) return "source";
-    if (time < 12) return "pullback";
-    if (time < 24.5) return "convert";
-    if (time < 27.5) return "launch";
-    if (time < 33) return "overlap";
+    if (time < 11.7) return "source";
+    if (time < 15) return "pullback";
+    if (time < 27.5) return "convert";
+    if (time < 30.5) return "launch";
+    if (time < 36) return "overlap";
     return "target";
   };
 
   const safe = (fn) => {
     try { fn(); } catch (_) {}
   };
+
+  const claudeLineClasses = [
+    "claude-prompt-line",
+    "claude-tool-line",
+    "claude-thinking-line",
+    "claude-tip-line",
+    "claude-status-line",
+  ];
+
+  const decorateClaudeTerminal = (mount = sourceMount) => {
+    const lines = Array.from(mount.querySelectorAll(".ap-line"));
+    let promptContinuation = -1;
+    lines.forEach((line, index) => {
+      line.classList.remove(...claudeLineClasses);
+      const text = (line.textContent || "").replace(/\s+/g, " ").trim();
+      if (text.includes("Keep gap_ms=0")) {
+        line.classList.add("claude-prompt-line");
+        promptContinuation = index + 1;
+      } else if (index === promptContinuation && text) {
+        line.classList.add("claude-prompt-line");
+      }
+      if (/^(●|⎿)|Bash\(|Running…|ctrl\+o to expand/.test(text)) line.classList.add("claude-tool-line");
+      if (/Architecting…|Baked for/.test(text)) line.classList.add("claude-thinking-line");
+      if (/Tip:|\/config/.test(text)) line.classList.add("claude-tip-line");
+      if (/bypass permissions|esc to interrupt|for agents/.test(text)) line.classList.add("claude-status-line");
+      for (const span of line.querySelectorAll("span")) {
+        span.classList.remove("claude-accent", "claude-command", "claude-muted");
+        const spanText = span.textContent || "";
+        if (/●/.test(spanText)) span.classList.add("claude-accent");
+        if (/\/config|Bash/.test(spanText)) span.classList.add("claude-command");
+        if (/Running|Tip:|ctrl\+o|bypass|permissions|interrupt/.test(spanText)) span.classList.add("claude-muted");
+      }
+    });
+  };
+
+  const syncClaudeLimit = () => {
+    const visibleLimit = elapsed >= LIMIT_START && elapsed < LIMIT_END;
+    const existing = sourceMount.querySelector(".claude-limit-injection");
+    if (!visibleLimit) {
+      if (existing) existing.remove();
+      return;
+    }
+    const terminal = sourceMount.querySelector(".ap-term");
+    if (!terminal || existing) return;
+    const injection = document.createElement("div");
+    injection.className = "claude-limit-injection";
+    injection.setAttribute("role", "status");
+    injection.setAttribute("aria-live", "polite");
+    const firstGutter = document.createElement("span");
+    firstGutter.className = "claude-limit-gutter";
+    firstGutter.textContent = "⎿";
+    const message = document.createElement("strong");
+    message.textContent = "You've hit your limit · resets 3pm (America/Montreal)";
+    const secondGutter = document.createElement("span");
+    secondGutter.className = "claude-limit-gutter";
+    const suggestion = document.createElement("span");
+    suggestion.className = "claude-limit-suggestion";
+    suggestion.textContent = "/upgrade to increase your usage limit.";
+    injection.append(firstGutter, message, secondGutter, suggestion);
+    terminal.append(injection);
+  };
+
+  const syncClaudePresentation = () => {
+    decorateClaudeTerminal();
+    syncClaudeLimit();
+  };
+
+  const scheduleClaudePresentation = () => {
+    if (claudePresentationScheduled) return;
+    claudePresentationScheduled = true;
+    window.requestAnimationFrame(() => {
+      claudePresentationScheduled = false;
+      syncClaudePresentation();
+    });
+  };
+
+  const claudeObserver = new MutationObserver(scheduleClaudePresentation);
+  claudeObserver.observe(sourceMount, { childList: true, characterData: true, subtree: true });
+
+  const compareClaudeObserver = new MutationObserver(() => decorateClaudeTerminal(compareSourceMount));
+  compareClaudeObserver.observe(compareSourceMount, { childList: true, characterData: true, subtree: true });
 
   const anchorSharedHistory = (mount) => {
     const windowElement = mount.closest(".native-window");
@@ -233,20 +316,19 @@ if (trajectory) {
     const detail = details[target];
     const phase = phaseAt(elapsed);
     const command = `smigrate transfer --title ${SESSION_TITLE} --from claude --to ${target}`;
-    const typing = Math.max(0, Math.min(1, (elapsed - 12.5) / 6));
-    const showContextLimit = elapsed >= 7 && elapsed < 12.8;
+    const typing = Math.max(0, Math.min(1, (elapsed - 15.5) / 6));
     trajectory.dataset.phase = phase;
     grid.dataset.phase = phase;
     progress.value = elapsed;
     progress.style.setProperty("--story-progress", `${elapsed / DURATION * 100}%`);
-    contextLimit.classList.toggle("is-visible", showContextLimit);
     commandNode.textContent = command.slice(0, Math.floor(command.length * typing));
-    scanNode.classList.toggle("is-visible", elapsed >= 19);
-    writeNode.classList.toggle("is-visible", elapsed >= 20.3);
-    doneNode.classList.toggle("is-visible", elapsed >= 21.5);
-    launchNode.classList.toggle("is-visible", elapsed >= 21.5);
-    migrationState.textContent = elapsed >= 21.5 ? "complete" : "working";
-    stageLabel.textContent = showContextLimit ? "Claude session limit reached" : phase === "source" ? "Work in Claude" : phase === "pullback" ? "Hand off the session" : phase === "convert" ? "Migrate the session" : phase === "launch" ? "Resume native session" : phase === "overlap" ? "Same history" : `Continue in ${detail.label}`;
+    scanNode.classList.toggle("is-visible", elapsed >= 22);
+    writeNode.classList.toggle("is-visible", elapsed >= 23.3);
+    doneNode.classList.toggle("is-visible", elapsed >= 24.5);
+    launchNode.classList.toggle("is-visible", elapsed >= 24.5);
+    migrationState.textContent = elapsed >= 24.5 ? "complete" : "working";
+    stageLabel.textContent = phase === "source" ? "Work in Claude" : phase === "pullback" ? "Hand off the session" : phase === "convert" ? "Migrate the session" : phase === "launch" ? "Resume native session" : phase === "overlap" ? "Same history" : `Continue in ${detail.label}`;
+    syncClaudePresentation();
     if (phase === "overlap") scheduleHistoryAnchors();
   };
 
@@ -293,6 +375,7 @@ if (trajectory) {
     );
     if (!settled && time > 0) safe(() => sourcePlayer.seek(time * SOURCE_SPEED));
     safe(() => sourcePlayer.pause());
+    scheduleClaudePresentation();
   }
 
   const mountPlayers = () => {
@@ -340,6 +423,7 @@ if (trajectory) {
       compareSourceMount,
       { ...options, poster: "npt:38" },
     );
+    window.requestAnimationFrame(() => decorateClaudeTerminal(compareSourceMount));
     compareTargetPlayer = window.AsciinemaPlayer.create(
       details[target].cast,
       compareTargetMount,
@@ -406,8 +490,12 @@ if (trajectory) {
     lastFrame = now;
     if (playing && visible && sourcePlayer && targetPlayer) {
       elapsed += Math.min((now - previous) / 1000, 0.12);
-      if (elapsed >= DURATION) setTime(0);
-      else update();
+      if (elapsed >= DURATION) {
+        elapsed = DURATION;
+        playing = false;
+        update();
+        updatePlaybackState();
+      } else update();
       syncPlayers();
     }
     window.requestAnimationFrame(tick);

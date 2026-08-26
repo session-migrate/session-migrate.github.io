@@ -357,7 +357,7 @@ if (trajectory) {
     loop: false,
     theme: "asciinema",
     terminalFontFamily: "Geist Mono, monospace",
-    terminalLineHeight: 1.38,
+    terminalLineHeight: 1.14,
   };
 
   function mountSourcePlayer(settled, time = 0) {

@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="robots" content="noindex">
+    <title>session-migrate social preview source</title>
+    <style>
+      * { box-sizing: border-box; }
+      html, body { width: 1731px; height: 909px; margin: 0; overflow: hidden; }
+      body {
+        display: grid;
+        place-items: center;
+        color: #f4f3ee;
+        background:
+          radial-gradient(circle at 50% 52%, rgba(138, 193, 255, .13), transparent 42%),
+          linear-gradient(rgba(220, 231, 244, .055) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(220, 231, 244, .055) 1px, transparent 1px),
+          #080a0d;
+        background-size: auto, 92px 92px, 92px 92px, auto;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+      main { width: 1560px; text-align: center; }
+      .brand { display: flex; gap: 19px; align-items: center; justify-content: center; }
+      .brand img { width: 82px; height: 82px; }
+      h1 { margin: 0; font-size: 92px; line-height: 1; letter-spacing: -5.5px; }
+      .tagline { margin: 16px 0 34px; color: #a8caff; font-size: 32px; letter-spacing: -.7px; }
+      .agents {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 13px;
+      }
+      .agent {
+        display: flex;
+        min-height: 132px;
+        gap: 14px;
+        align-items: center;
+        padding: 18px 17px;
+        text-align: left;
+        background: rgba(15, 18, 23, .94);
+        border: 1px solid rgba(255, 255, 255, .13);
+        border-radius: 18px;
+        box-shadow: 0 16px 42px rgba(0, 0, 0, .32);
+      }
+      .agent:nth-child(3n + 1) { border-color: rgba(184, 249, 74, .36); }
+      .agent:nth-child(3n + 2) { border-color: rgba(138, 193, 255, .38); }
+      .agent:nth-child(3n) { border-color: rgba(255, 156, 82, .32); }
+      .agent img {
+        width: 58px;
+        height: 58px;
+        flex: 0 0 auto;
+        object-fit: contain;
+        border-radius: 14px;
+      }
+      .agent b { display: block; font-size: 20px; line-height: 1.15; }
+      .agent span { display: block; margin-top: 7px; color: #7f8490; font: 12px/1.2 monospace; letter-spacing: 1px; text-transform: uppercase; }
+      footer { margin-top: 27px; color: rgba(244, 243, 238, .55); font: 16px monospace; letter-spacing: 4px; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="brand"><img src="logo-mark.svg" alt=""><h1>session-migrate</h1></div>
+      <p class="tagline">Migrate your sessions to any harness.</p>
+      <div class="agents">
+        <div class="agent"><img src="agents/claude-code.svg" alt=""><div><b>Claude Code</b><span>read + write</span></div></div>
+        <div class="agent"><img src="agents/codex.svg" alt=""><div><b>Codex</b><span>read + write</span></div></div>
+        <div class="agent"><img src="agents/pi.svg" alt=""><div><b>Pi</b><span>read + write</span></div></div>
+        <div class="agent"><img src="agents/oh-my-pi.svg" alt=""><div><b>Oh My Pi</b><span>read + write</span></div></div>
+        <div class="agent"><img src="agents/opencode.svg" alt=""><div><b>OpenCode</b><span>read + write</span></div></div>
+        <div class="agent"><img src="agents/copilot.svg" alt=""><div><b>Copilot</b><span>read + write</span></div></div>
+        <div class="agent"><img src="agents/antigravity.svg" alt=""><div><b>Antigravity</b><span>read + write</span></div></div>
+        <div class="agent"><img src="agents/mistral-vibe.svg" alt=""><div><b>Mistral Vibe</b><span>read + write</span></div></div>
+        <div class="agent"><img src="agents/muse.svg" alt=""><div><b>Muse Code</b><span>read + write</span></div></div>
+        <div class="agent"><img src="agents/qwen-code.svg" alt=""><div><b>Qwen Code</b><span>read + write</span></div></div>
+        <div class="agent"><img src="agents/kimi-code.svg" alt=""><div><b>Kimi Code</b><span>read + write</span></div></div>
+        <div class="agent"><img src="agents/grok.svg" alt=""><div><b>Grok</b><span>read + write</span></div></div>
+        <div class="agent"><img src="agents/kilo-code.svg" alt=""><div><b>Kilo Code</b><span>read + write</span></div></div>
+        <div class="agent"><img src="agents/openhands.svg" alt=""><div><b>OpenHands</b><span>read + write</span></div></div>
+        <div class="agent"><img src="agents/hermes-agent.png" alt=""><div><b>Hermes Agent</b><span>read + write</span></div></div>
+        <div class="agent"><img src="agents/mastracode.svg" alt=""><div><b>MastraCode</b><span>read + write</span></div></div>
+        <div class="agent"><img src="agents/devin.png" alt=""><div><b>Devin</b><span>read + write</span></div></div>
+        <div class="agent"><img src="agents/cursor.svg" alt=""><div><b>Cursor*</b><span>experimental</span></div></div>
+      </div>
+      <footer>DISCOVER · CONVERT · RESUME · 324 ROUTES</footer>
+    </main>
+  </body>
+</html>

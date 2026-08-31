@@ -12,3 +12,13 @@ from the upstream Oh My Pi repository, also under the MIT License:
 <https://github.com/can1357/oh-my-pi>. Marks remain the trademarks of their
 respective owners. Their appearance identifies compatible products and does
 not imply endorsement.
+
+The Hermes Agent, MastraCode, and Devin marks come from their respective
+official project or organization repositories:
+
+- <https://github.com/NousResearch/hermes-agent>
+- <https://github.com/mastra-ai/mastra/tree/main/mastracode>
+- <https://github.com/CognitionAI/devin-cli>
+
+They are hosted in this separate website repository so that product marks are
+not distributed as part of the MIT-licensed Python package.

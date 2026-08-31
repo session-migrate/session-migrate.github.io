@@ -35,6 +35,9 @@ if (agentPrompt) {
     grok: "Grok",
     kilo: "Kilo Code",
     openhands: "OpenHands",
+    hermes: "Hermes Agent",
+    mastracode: "MastraCode",
+    devin: "Devin",
     cursor: "Cursor",
   };
 
